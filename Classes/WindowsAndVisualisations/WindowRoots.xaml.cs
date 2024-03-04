@@ -21,7 +21,7 @@ namespace CleanDisk24
     public partial class WindowRoots : Window
     {
         public MainWindow mw;
-        //private Database database;
+        private Database Database { get; }
         //public Database DB;
         System.Diagnostics.Stopwatch stopwatch;
 
@@ -29,9 +29,9 @@ namespace CleanDisk24
         {
             this.mw = mainWindow;
             //this.DB = mainWindow.dataWorker.;
-            //database = ((App)Application.Current).Database; 
-            DataWorkerAgent.ResetAllRoots();  // !!
-            DataContext = new FoldersDataViewModel(mw.DataWorker);
+            Database = ((App)Application.Current).Database; 
+            DataWorkerAgent.ResetAllRoots(Database);  // !!
+            DataContext = new FoldersDataViewModel(Database);
             InitializeComponent();
             stopwatch = new System.Diagnostics.Stopwatch(); //for logging
             stopwatch.Start();
@@ -74,10 +74,10 @@ namespace CleanDisk24
             //{
             string message =
             await
-                mw.DataWorker.SetBrowser1_async(selectedDirectory);
+                DataWorkerAgent.SetBrowser1_async(selectedDirectory, Database);
             //mw.DataWorker.SetBrowsedDirectory(selectedDirectory, mw.DataWorker.Browser1);
             //});
-            DataContext = new FoldersDataViewModel(mw.DataWorker);
+            DataContext = new FoldersDataViewModel(Database);
             Log(message);
         }
     }

@@ -15,23 +15,23 @@ namespace CleanDisk24.DataWorker
         private static MyPlace Browser1 = Database.prodigyNTB;
         private static MyPlace Browser2 = Database.prodigyPC;
 
-        public static async void SetBrowsedDirectory(MyPlace source, MyPlace area)//attepmt for universal solution/useless
+        public static async void SetBrowsedDirectory(MyPlace source, MyPlace area, Database DB)//attepmt for universal solution/useless
         {
-            area = await ScanAndAdd_Only_OneDirectory_async(source);
+            area = await ScanAndAdd_Only_OneDirectory_async(source, DB);
         }
-        public static async Task<string> SetBrowser1_async(MyPlace selectedDirectory) // Remake REF ...or no
+        public static async Task<string> SetBrowser1_async(MyPlace selectedDirectory, Database DB) // Remake REF ...or no
         {
             string setDirResult = $"Browser 1 unable to set {selectedDirectory}";
             if (Directory.Exists(selectedDirectory.WholePath)) //strange check
             {
-                Browser1 = await ScanAndAdd_Only_OneDirectory_async(selectedDirectory);
+                Browser1 = await ScanAndAdd_Only_OneDirectory_async(selectedDirectory, DB);
                 setDirResult = $"Browser1 set to: {selectedDirectory.WholePath}";
             }
             return setDirResult;
         }
-        public static async void SetBrowser2(MyPlace selectedDirectory)
+        public static async void SetBrowser2(MyPlace selectedDirectory, Database DB)
         {
-            Browser2 = await ScanAndAdd_Only_OneDirectory_async(selectedDirectory);
+            Browser2 = await ScanAndAdd_Only_OneDirectory_async(selectedDirectory, DB);
         }
         public static ObservableCollection<MyRootPlace> GetChosenRoots(Database DB) => DB.SetOfChosenRoots;
         public static ObservableCollection<MyItemDirectoryOrFile> GetDirectoryChildren_RootsSub()
@@ -44,7 +44,7 @@ namespace CleanDisk24.DataWorker
         /// </summary>
         /// <param name="directoryImage"></param>
         /// <returns></returns>
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(MyPlace directoryImage)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(MyPlace directoryImage, Database DB)
         {
             /*
             string givenPath;
@@ -55,32 +55,32 @@ namespace CleanDisk24.DataWorker
             DirectoryInfo scannedDirectory = new DirectoryInfo(directoryImage.WholePath);
 
             DuoDirInfo currentlyScannedDirectory = new DuoDirInfo(directoryImage, scannedDirectory);
-            return await ScanAndAdd_Only_OneDirectory_async(currentlyScannedDirectory);
+            return await ScanAndAdd_Only_OneDirectory_async(currentlyScannedDirectory, DB);
         }
         /// <summary>
         /// 3 overloads, this takes "System.IO.DirectoryInfo" and redirects to the 3rd.
         /// </summary>
         /// <param name="scannedDirectory"></param>
         /// <returns></returns>
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DirectoryInfo scannedDirectory)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DirectoryInfo scannedDirectory, Database DB)
         {
-            MyPlace directoryImage = CreateMyDirectoryImage(scannedDirectory);
+            MyPlace directoryImage = CreateMyDirectoryImage(scannedDirectory, DB);
             DuoDirInfo currentlyScannedDirectory = new DuoDirInfo(directoryImage, scannedDirectory);
-            return await ScanAndAdd_Only_OneDirectory_async(currentlyScannedDirectory);
+            return await ScanAndAdd_Only_OneDirectory_async(currentlyScannedDirectory, DB);
         }
         /// <summary>
         /// 3 overloads, this takes "DuoDirInfo" and does the actual work.
         /// </summary>
         /// <param name="currentlyScannedDirectory" class="DuoDirInfo"></param>
         /// <returns></returns>
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory, Database DB)
         {
             DirectoryInfo[] moreDirInfos = await ScanDirectory_Async(currentlyScannedDirectory);
-            await Task.Run(() => ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo));
+            await Task.Run(() => ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB));
             foreach (DirectoryInfo foundDirInfo in moreDirInfos)
             {
                 MyDirectory foundDir = new MyDirectory(currentlyScannedDirectory.MyPlace, foundDirInfo);
-                AddDirectoryToDBList(foundDir);
+                AddDirectoryToDBList(foundDir, DB);
             }
             return currentlyScannedDirectory.MyPlace;
         }
