@@ -65,6 +65,8 @@ namespace CleanDisk24
         public Brush ColorForProgress { get => _colorForProgress; }
         private Brush _colorForSize;
         public Brush ColorForSize { get => _colorForSize; }
+        
+        /// <returns> Default C:\ </returns>
         internal static MyRootDrive Def() => new MyRootDrive("C:\\", DriveType.Unknown, true, null, null);//{ Name = "C:\\" };
         //public LinearGradientBrush DefSize_GradientBrush => ColorCreator.GradientBrush_Size;
         //public LinearGradientBrush DefProgress_GradientBrush => ColorCreator.GradientBrush_Progress;

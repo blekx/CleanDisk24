@@ -4,7 +4,7 @@ using System.Windows.Media;
 namespace CleanDisk24
 {
     /// <summary>
-    /// 
+    /// MyColor at Position(long Int) 
     /// </summary>
     public class MyGradientStop
     {

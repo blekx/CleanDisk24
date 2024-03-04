@@ -18,12 +18,12 @@ namespace CleanDisk24
             {
                 if (_allRoots == null)
                 {
-                    _allRoots = new ObservableCollection<MyRootPlace>();
-                    _allRoots.Add(defaultRootDrive);
-
                     string message = "There was no Root directory at all.";
                     //System.Windows.MessageBox.Show(message);
                     mw.Log(message);
+
+                    _allRoots = new ObservableCollection<MyRootPlace>();
+                    _allRoots.Add(defaultRootDrive);
                 }
                 return _allRoots;
             }
@@ -32,7 +32,7 @@ namespace CleanDisk24
                 _allRoots = value;
                 ObservableCollection<MyRootDrive> onlyDrives = new ObservableCollection<MyRootDrive>();
                 //foreach (MyRootDrive drive in value) AllRootDrives.Add(drive);
-                foreach (MyRootPlace drive in value) if (drive is MyRootDrive) AllRootDrives.Add(drive as MyRootDrive);
+                foreach (MyRootPlace drive in value) if (drive is MyRootDrive) onlyDrives.Add(drive as MyRootDrive);
                 AllRootDrives = onlyDrives;
             }
         }
@@ -48,7 +48,7 @@ namespace CleanDisk24
             _allRoots = newData;
         }
 
-        private MyRootDrive defaultRootDrive = MyItemDirectoryOrFile.Def();
+        private static MyRootDrive defaultRootDrive = MyItemDirectoryOrFile.Def();
             //new MyRootDrive("fake_Name", DriveType.Unknown, true, null, null);// { Name = "C:" };  // ok
         public static MyRootDirectory prodigyNTB = new MyRootDirectory("Prodigy", @"C:\Music\Prodigy");
         public static MyRootDirectory prodigyPC = new MyRootDirectory("Prodigy", @"D:\Music\Music\Prodigy");
