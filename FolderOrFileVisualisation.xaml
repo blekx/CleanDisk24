@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="CleanDisk24.FolderOrFileVisualisation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CleanDisk24"
+             mc:Ignorable="d" 
+             d:DesignHeight="81" d:DesignWidth="110">
+    <Grid Background="#44FFAAAA"
+          Height="81" Width="110">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="55*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+
+        <Rectangle Grid.Column="1" Grid.Row="1" Fill="{Binding ProgBr}" Grid.RowSpan="1" />
+        <Rectangle Grid.Column="1" Grid.Row="2" Fill="{Binding ColorForProgress}" Grid.RowSpan="1" />
+        <Rectangle Grid.Column="1" Grid.Row="3" Fill="#CCFFFF64" Grid.RowSpan="1"/>
+        <Rectangle Grid.Column="1" Grid.Row="4" Fill="{Binding ColorForSize}" Grid.RowSpan="1"/>
+        <Rectangle Grid.Column="1" Grid.Row="5" Fill="{Binding SizeBr}" Grid.RowSpan="1" />
+
+        <!--<TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="Te............st" VerticalAlignment="Top" Grid.RowSpan="1"/>-->
+        <StackPanel Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Grid.RowSpan="1">
+            <!--<TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Path=Name}" VerticalAlignment="Top" Grid.RowSpan="1"/>
+            <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Path=WholePath}" VerticalAlignment="Top" Grid.RowSpan="1"/>-->
+            <TextBlock TextWrapping="Wrap" Text="{Binding Name}"/>
+            <TextBlock TextWrapping="Wrap" Text="{Binding WholePath}"
+                       />
+        </StackPanel>
+        <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" 
+                   Text="{Binding Path=Size}" VerticalAlignment="Bottom" Grid.RowSpan="3"
+                   Background="#99CCFFFF"/>
+    </Grid>
+</UserControl>

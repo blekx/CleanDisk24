@@ -4,6 +4,12 @@
              xmlns:local="clr-namespace:CleanDisk24"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <GridLength x:Key="ButtonHeight1">42*</GridLength>
+        <GridLength x:Key="ButtonWidth1">142*</GridLength>
+        <GridLength x:Key="WindowPadding">20</GridLength>
+        <GridLength x:Key="ColumnBigDirectory">147</GridLength>
+        <GridLength x:Key="ColumnSmallDirectory">170</GridLength>
+
     </Application.Resources>
 </Application>
