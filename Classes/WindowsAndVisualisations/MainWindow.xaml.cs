@@ -12,21 +12,25 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CleanDisk24.DataWorker;
 
 namespace CleanDisk24
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, ILoggable
     {
-        public DataWorker DataWorker;
+        //public DataWorkerAgent Agent;
+        private Database database;
 
         public MainWindow()
         {
             InitializeComponent();
-            DataWorker = new DataWorker(new Database(this), this);
+            //Agent = new DataWorkerAgent(new Database(this), this);
             //DataWorker.StartupLoadData();
+            database = ((App)Application.Current).Database;
+            Log(database.SetWindowForCommunication(this));
         }
 
         private void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -53,6 +57,7 @@ namespace CleanDisk24
             windowRoots.Show();
         }
 
+        /*
         private void btTest_Click(object sender, RoutedEventArgs e)
         {
             System.IO.DirectoryInfo di;
@@ -67,13 +72,14 @@ namespace CleanDisk24
             else di = null;
             try
             {
-            DataWorker.ScanAndAddDirectory_Initialize(di);
+            Agent.ScanAndAddDirectory_Initialize(di);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+        */
         
         public void Log(string message)
         {

@@ -6,17 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanDisk24
+namespace CleanDisk24.DataWorker
 {
-    public partial class DataWorker
+    public static partial class DataWorkerAgent
     {
-        public void ScanAndAddDirectory_Initialize_Old(DirectoryInfo di)
+        public static void ScanAndAddDirectory_Initialize_Old(DirectoryInfo di)
         {
             MyPlace directory = CreateMyDirectoryImage(di);
             ScanDirectoryAndAddSub_Recurrent(directory, di);
             ScandAndAddFilesHere_Old(directory, di);
         }
-        public async void ScanAndAddDirectory_Initialize(DirectoryInfo rootDirInfo)
+        public static async void ScanAndAddDirectory_Initialize(DirectoryInfo rootDirInfo)
         {
             MyPlace rootPlace = CreateMyDirectoryImage(rootDirInfo);
             Stack<DuoDirInfo> directoriesToBeScanned = new Stack<DuoDirInfo>();
@@ -44,12 +44,12 @@ namespace CleanDisk24
             //ScanDirectoryAndAddSub_Recurrent_Async(rootPlace, rootDirInfo);
         }
 
-        internal void StartupLoadData()
+        internal static void StartupLoadData()
         {
             throw new NotImplementedException();
         }
 
-        private void ScandAndAddFilesHere_Old(MyPlace md, DirectoryInfo di)
+        private static void ScandAndAddFilesHere_Old(MyPlace md, DirectoryInfo di)
         {
             foreach (FileInfo fileinfo in di.GetFiles())
             {
@@ -58,7 +58,7 @@ namespace CleanDisk24
                 DB.AllFiles.Add(mf);
             }
         }
-        private async Task<bool> ScandAndAddFilesHere_Async_Wrong(MyPlace md, DirectoryInfo di)
+        private static async Task<bool> ScandAndAddFilesHere_Async_Wrong(MyPlace md, DirectoryInfo di)
         {
             Task t = Task.Run(() =>
             {
@@ -75,7 +75,7 @@ namespace CleanDisk24
             });
             return t.IsCompleted;
         }
-        private async void ScandAndAddFilesHere_Async(MyPlace md, DirectoryInfo di)
+        private static async void ScandAndAddFilesHere_Async(MyPlace md, DirectoryInfo di)
         {
             FileInfo[] files = await Task.Run(() => di.GetFiles());
             foreach (FileInfo fileInfo in files)
@@ -85,11 +85,11 @@ namespace CleanDisk24
                 DB.AllFiles.Add(mf);
             }
         }
-        private Task<FileInfo[]> GetFiles(DirectoryInfo di) => Task.FromResult(di.GetFiles());
+        private static Task<FileInfo[]> GetFiles(DirectoryInfo di) => Task.FromResult(di.GetFiles());
         //FileInfo[] files;
         //files = di.GetFiles();
         //files;
-        private async void ScanDirectoryAndAddSub_Recurrent_Async(MyPlace md, DirectoryInfo di)
+        private static async void ScanDirectoryAndAddSub_Recurrent_Async(MyPlace md, DirectoryInfo di)
         {
             DirectoryInfo[] subDirectories = await Task.Run(() => di.GetDirectories());
             foreach (DirectoryInfo subDir in subDirectories)
@@ -101,14 +101,14 @@ namespace CleanDisk24
             ScandAndAddFilesHere_Old(md, di);
         }
         ///<summary>This directory must have a parent.</summary>
-        private async Task<DirectoryInfo[]> ScanDirectory_Async(DuoDirInfo scannedDirectory)
+        private static async Task<DirectoryInfo[]> ScanDirectory_Async(DuoDirInfo scannedDirectory)
         //MyPlace parent, DirectoryInfo directory)
         {
             DirectoryInfo[] subDirectories = await Task.Run(() => scannedDirectory.DirectoryInfo.GetDirectories());
             return subDirectories;//Task.FromResult(subDirectories);
         }
 
-        private void ScanDirectoryAndAddSub_Recurrent(MyPlace md, DirectoryInfo di)
+        private static void ScanDirectoryAndAddSub_Recurrent(MyPlace md, DirectoryInfo di)
         {
             foreach (DirectoryInfo subDir in di.GetDirectories())
             {

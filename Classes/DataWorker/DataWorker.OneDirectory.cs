@@ -6,20 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CleanDisk24
+namespace CleanDisk24.DataWorker
 {
-    public partial class DataWorker
+    public static partial class DataWorkerAgent
     {
         // private MyPlace Browser1 = Database.emptyFakeRoot;
         // private MyPlace Browser2 = Database.emptyFakeRoot;
-        private MyPlace Browser1 = Database.prodigyNTB;
-        private MyPlace Browser2 = Database.prodigyPC;
+        private static MyPlace Browser1 = Database.prodigyNTB;
+        private static MyPlace Browser2 = Database.prodigyPC;
 
-        public async void SetBrowsedDirectory(MyPlace source, MyPlace area)//attepmt for universal solution/useless
+        public static async void SetBrowsedDirectory(MyPlace source, MyPlace area)//attepmt for universal solution/useless
         {
             area = await ScanAndAdd_Only_OneDirectory_async(source);
         }
-        public async Task<string> SetBrowser1_async(MyPlace selectedDirectory) // Remake REF ...or no
+        public static async Task<string> SetBrowser1_async(MyPlace selectedDirectory) // Remake REF ...or no
         {
             string setDirResult = $"Browser 1 unable to set {selectedDirectory}";
             if (Directory.Exists(selectedDirectory.WholePath)) //strange check
@@ -29,14 +29,14 @@ namespace CleanDisk24
             }
             return setDirResult;
         }
-        public async void SetBrowser2(MyPlace selectedDirectory)
+        public static async void SetBrowser2(MyPlace selectedDirectory)
         {
             Browser2 = await ScanAndAdd_Only_OneDirectory_async(selectedDirectory);
         }
-        public ObservableCollection<MyRootPlace> GetChosenRoots() => DB.SetOfChosenRoots;
-        public ObservableCollection<MyItemDirectoryOrFile> GetDirectoryChildren_RootsSub()
+        public static ObservableCollection<MyRootPlace> GetChosenRoots(Database DB) => DB.SetOfChosenRoots;
+        public static ObservableCollection<MyItemDirectoryOrFile> GetDirectoryChildren_RootsSub()
             => new ObservableCollection<MyItemDirectoryOrFile>(Browser1.Items);
-        public ObservableCollection<MyItemDirectoryOrFile> GetDirectoryChildren_ChosenSub()
+        public static ObservableCollection<MyItemDirectoryOrFile> GetDirectoryChildren_ChosenSub()
             => new ObservableCollection<MyItemDirectoryOrFile>(Browser2.Items);
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace CleanDisk24
         /// </summary>
         /// <param name="directoryImage"></param>
         /// <returns></returns>
-        public async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(MyPlace directoryImage)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(MyPlace directoryImage)
         {
             /*
             string givenPath;
@@ -62,7 +62,7 @@ namespace CleanDisk24
         /// </summary>
         /// <param name="scannedDirectory"></param>
         /// <returns></returns>
-        public async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DirectoryInfo scannedDirectory)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DirectoryInfo scannedDirectory)
         {
             MyPlace directoryImage = CreateMyDirectoryImage(scannedDirectory);
             DuoDirInfo currentlyScannedDirectory = new DuoDirInfo(directoryImage, scannedDirectory);
@@ -73,7 +73,7 @@ namespace CleanDisk24
         /// </summary>
         /// <param name="currentlyScannedDirectory" class="DuoDirInfo"></param>
         /// <returns></returns>
-        public async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory)
         {
             DirectoryInfo[] moreDirInfos = await ScanDirectory_Async(currentlyScannedDirectory);
             await Task.Run(() => ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo));

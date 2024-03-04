@@ -9,10 +9,10 @@ namespace CleanDisk24
     public class FoldersDataViewModel : INotifyPropertyChanged
     {
         private Database DB;
-        private DataWorker dw;
+        private DataWorkerAgent dw;
 
         //public FoldersDataViewModel(Database db) { DB = db; }
-        public FoldersDataViewModel(DataWorker dw)
+        public FoldersDataViewModel(DataWorkerOld dw)
         {
             this.dw = dw;
         }
