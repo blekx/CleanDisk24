@@ -22,15 +22,14 @@ namespace CleanDisk24
     public partial class MainWindow : Window, ILoggable
     {
         //public DataWorkerAgent Agent;
-        private Database database;
-
+        private Database Database { get; }
         public MainWindow()
         {
             InitializeComponent();
             //Agent = new DataWorkerAgent(new Database(this), this);
             //DataWorker.StartupLoadData();
-            database = ((App)Application.Current).Database;
-            Log(database.SetWindowForCommunication(this));
+            Database = ((App)Application.Current).Database;
+            Log(Database.SetWindowForCommunication(this));
         }
 
         private void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -57,7 +56,7 @@ namespace CleanDisk24
             windowRoots.Show();
         }
 
-        /*
+
         private void btTest_Click(object sender, RoutedEventArgs e)
         {
             System.IO.DirectoryInfo di;
@@ -72,15 +71,15 @@ namespace CleanDisk24
             else di = null;
             try
             {
-            Agent.ScanAndAddDirectory_Initialize(di);
+                DataWorkerAgent.ScanAndAddDirectory_Initialize(di, Database);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-        */
-        
+
+
         public void Log(string message)
         {
             TB_Log.Text += Environment.NewLine + message;

@@ -54,7 +54,9 @@ namespace CleanDisk24.DataWorker
             */
             DirectoryInfo scannedDirectory = new DirectoryInfo(directoryImage.WholePath);
 
-            DuoDirInfo currentlyScannedDirectory = new DuoDirInfo(directoryImage, scannedDirectory);
+            DuoDirInfo currentlyScannedDirectory
+                = new DuoDirInfo(directoryImage, scannedDirectory);
+            //currentlyScannedDirectory = await ((directoryImage,scannnedDiectory) => { (new DuoDirInfo(directoryImage, scannedDirectory)); });
             return await ScanAndAdd_Only_OneDirectory_async(currentlyScannedDirectory, DB);
         }
         /// <summary>
