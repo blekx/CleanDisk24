@@ -23,24 +23,24 @@ namespace CleanDisk24
         public MainWindow mw;
         private Database Database { get; }
         //public Database DB;
-        System.Diagnostics.Stopwatch stopwatch;
+        System.Diagnostics.Stopwatch stopwatch_ForLog;
 
         public WindowRoots(MainWindow mainWindow)
         {
             this.mw = mainWindow;
             //this.DB = mainWindow.dataWorker.;
-            Database = ((App)Application.Current).Database; 
+            Database = ((App)Application.Current).Database;
             DataWorkerAgent.ResetAllRoots(Database);  // !!
             DataContext = new FoldersDataViewModel(Database);
             InitializeComponent();
-            stopwatch = new System.Diagnostics.Stopwatch(); //for logging
-            stopwatch.Start();
+            stopwatch_ForLog = new System.Diagnostics.Stopwatch();
+            stopwatch_ForLog.Start();
         }
 
         public void Log(string text)
         {
             #region reg: string time = ((int)(stopwatch.Elapsed.TotalMil
-            string time = ((int)(stopwatch.Elapsed.TotalMilliseconds * 10)).ToString();
+            string time = ((int)(stopwatch_ForLog.Elapsed.TotalMilliseconds * 10)).ToString();
             if (time.Length > 7) time = time.Insert(time.Length - 7, " ");
             time = time.Insert(time.Length - 4, ".");
             #endregion
@@ -62,23 +62,43 @@ namespace CleanDisk24
                 this.DragMove();
         }
 
+        private async void LbChooseDirectory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string brokenSays = "nothing";
+            //
+            brokenSays = await Broken_LbChooseDirectory_SelectionChanged(sender, e);
+            Log("broken methood compleeted and: " + brokenSays);
+        }
+
+
         /// <summary>
         /// Click on one of the ROOTS
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void LbChooseDirectory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async Task<string> Broken_LbChooseDirectory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            string result = "Bad";
             MyPlace selectedDirectory = (sender as ListBox).SelectedItem as MyPlace;
             //await Task.Run(() =>
             //{
-            string message =
-            await
-                DataWorkerAgent.SetBrowser1_async(selectedDirectory, Database);
-            //mw.DataWorker.SetBrowsedDirectory(selectedDirectory, mw.DataWorker.Browser1);
-            //});
-            DataContext = new FoldersDataViewModel(Database);
-            Log(message);
+            try
+            {
+                string message = await DataWorkerAgent.SetBrowser1_async(selectedDirectory, Database);
+                //mw.DataWorker.SetBrowsedDirectory(selectedDirectory, mw.DataWorker.Browser1);
+                //});
+                DataContext = new FoldersDataViewModel(Database);
+                Log(message);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                result = "Good";
+            }
+            return result;
         }
     }
 }

@@ -24,7 +24,9 @@ namespace CleanDisk24.DataWorker
             string setDirResult = $"Browser 1 unable to set {selectedDirectory}";
             if (Directory.Exists(selectedDirectory.WholePath)) //strange check
             {
-                Browser1 = await ScanAndAdd_Only_OneDirectory_async(selectedDirectory, DB);
+                // debugging
+                Browser1 = //selectedDirectory;//
+                                             await ScanAndAdd_Only_OneDirectory_async(selectedDirectory, DB);
                 setDirResult = $"Browser1 set to: {selectedDirectory.WholePath}";
             }
             return setDirResult;
@@ -78,7 +80,8 @@ namespace CleanDisk24.DataWorker
         public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory, Database DB)
         {
             DirectoryInfo[] moreDirInfos = await ScanDirectory_Async(currentlyScannedDirectory);
-            await Task.Run(() => ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB));
+            //ERROR HERE !!!!!!!!!!!!
+            //await Task.Run(() => ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB));
             foreach (DirectoryInfo foundDirInfo in moreDirInfos)
             {
                 MyDirectory foundDir = new MyDirectory(currentlyScannedDirectory.MyPlace, foundDirInfo);
