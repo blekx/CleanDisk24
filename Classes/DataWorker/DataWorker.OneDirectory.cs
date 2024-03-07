@@ -77,16 +77,51 @@ namespace CleanDisk24.DataWorker
         /// </summary>
         /// <param name="currentlyScannedDirectory" class="DuoDirInfo"></param>
         /// <returns></returns>
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory, Database DB)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async_Old(DuoDirInfo currentlyScannedDirectory, Database DB)
         {
+            // 1/2 Directories:
             DirectoryInfo[] moreDirInfos = await ScanDirectory_Async(currentlyScannedDirectory);
-            //ERROR HERE !!!!!!!!!!!!
+            // 2/2 Files:
+            //ERROR HERE: !!!!!!!!!!!!
             //await Task.Run(() => ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB));
+            //FIXED: 
+            await ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB);
             foreach (DirectoryInfo foundDirInfo in moreDirInfos)
             {
                 MyDirectory foundDir = new MyDirectory(currentlyScannedDirectory.MyPlace, foundDirInfo);
                 AddDirectoryToDBList(foundDir, DB);
             }
+            return currentlyScannedDirectory.MyPlace;
+        }
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async_Attempt2didntWorkWell(DuoDirInfo currentlyScannedDirectory, Database DB)
+        {
+            /*
+            Task<int> MoreFiles = Task.Run(async () =>
+            {
+                return await ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB);
+            });*/
+            DirectoryInfo[] moreDirInfos = await ScanDirectory_Async(currentlyScannedDirectory);
+            foreach (DirectoryInfo foundDirInfo in moreDirInfos)
+            {
+                MyDirectory foundDir = new MyDirectory(currentlyScannedDirectory.MyPlace, foundDirInfo);
+                AddDirectoryToDBList(foundDir, DB);
+            }
+            int filesAdded = await //MoreFiles;
+                ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB);
+            DB.Log($"{filesAdded.ToString()} files added in {currentlyScannedDirectory}");
+            return currentlyScannedDirectory.MyPlace;
+        }
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory, Database DB)
+        {
+            DirectoryInfo[] moreDirInfos = await ScanDirectory_Async(currentlyScannedDirectory);
+            foreach (DirectoryInfo foundDirInfo in moreDirInfos)
+            {
+                MyDirectory foundDir = new MyDirectory(currentlyScannedDirectory.MyPlace, foundDirInfo);
+                AddDirectoryToDBList(foundDir, DB);
+            }
+            //int filesAdded = 
+                await ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB);
+            //DB.Log($"{filesAdded.ToString()} files added in {currentlyScannedDirectory}");
             return currentlyScannedDirectory.MyPlace;
         }
     }

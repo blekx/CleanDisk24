@@ -75,15 +75,17 @@ namespace CleanDisk24.DataWorker
             });
             return t.IsCompleted;
         }
-        private static async void ScandAndAddFilesHere_Async(MyPlace md, DirectoryInfo di, Database DB)
+        private static async Task<int> ScandAndAddFilesHere_Async(MyPlace md, DirectoryInfo di, Database DB)
         {
             FileInfo[] files = await Task.Run(() => di.GetFiles());
+            //FileInfo[] files = di.GetFiles();
             foreach (FileInfo fileInfo in files)
             {
                 MyFile mf = new MyFile(md, fileInfo);
                 md.Items.Add(mf);
                 DB.AllFiles.Add(mf);
             }
+            return files.Count();
         }
         private static Task<FileInfo[]> GetFiles(DirectoryInfo di) => Task.FromResult(di.GetFiles());
         //FileInfo[] files;
