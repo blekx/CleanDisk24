@@ -30,7 +30,9 @@ namespace CleanDisk24
             //Agent = new DataWorkerAgent(new Database(this), this);
             //DataWorker.StartupLoadData();
             Database = ((App)Application.Current).Database;
-            edgeMover = new EdgeMover(this, mainGrid);
+            edgeMover = new EdgeMover();
+            EdgeMover.CreateEdgesForWindow(this, mainGrid, this.DragMove);
+            //edgeMover = new EdgeMover(this, mainGrid, this.DragMove);
             Log(Database.SetWindowForCommunication(this));
         }
 
