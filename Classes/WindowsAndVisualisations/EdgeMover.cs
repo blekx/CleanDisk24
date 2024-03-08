@@ -28,8 +28,8 @@ namespace CleanDisk24
         private static Window ParentWindow { get; set; }
         private static ILoggable WindowForCommunication;
         //private static Grid grid;
-        private static bool MoverIsFree { get; set; }
-        private static bool LastTimerTick { get; set; } = false;
+        private static bool DraggingEdgeNow { get; set; } //= false;
+        private static bool LastTimerTick { get; set; } //= false;
         private static DataForLastTick DataForLastTick { get; set; }
         private static string errorMessage = "This part of program didn't manage to find the GRID (<Grid x:Name=\"mainGrid\" ) or something with it is wrong.";
         private static SolidColorBrush color = new SolidColorBrush(Color.FromRgb(
@@ -38,23 +38,18 @@ namespace CleanDisk24
         private Rectangle[] edges;
         private static DispatcherTimer timer;
         private static Stopwatch stopwatch = new Stopwatch();
-        private static Rectangle activeEdge;
+        private static Rectangle ColorChangingEdge { get; set; }
+        private static Rectangle DraggedEdge { get; set; }
         private const int msToFullyShowEdge = 1000;
         private const double fullOpacityIsOnly = 0.8;
         private readonly DragMoveDelegate dragMoveDelegate;
         private static WindowPosition positionBefore;
 
         public EdgeMover()
-        //public EdgeMover(Window window, Grid grid, DragMoveDelegate dragMoveDelegate)
         {
-            //parentWindow = window;
-            //if (WindowForCommunication == null) WindowForCommunication = (ILoggable)window;
-            ////this.grid = FindGrid(window);
-            //if (grid is Grid) { } else throw new System.Exception(errorMessage);
             timer = new DispatcherTimer();
             timer.Interval = System.TimeSpan.FromMilliseconds(15);
             timer.Tick += TimerTick;
-            //timer.Start();
         }
 
         public static void CreateEdgesForWindow(Window window, Grid grid, DragMoveDelegate dragMoveDelegate)
@@ -68,19 +63,18 @@ namespace CleanDisk24
         private static void TimerTick(object sender, EventArgs e)
         {
             long timeOnEdge = stopwatch.ElapsedMilliseconds;
-            if (activeEdge != null)
+            if (ColorChangingEdge != null)
             {
-                activeEdge.Opacity = CountOpacity(timeOnEdge);
+                ColorChangingEdge.Opacity = CountOpacity(timeOnEdge);
                 WindowForCommunication.Log(timeOnEdge.ToString() + " ms spent on edge.");
             }
             else timer.Stop();
             if (LastTimerTick)
             {
                 stopwatch.Reset();
-                CountWindowPosition(DataForLastTick.sender, DataForLastTick.e);
-                //CountWindowPosition(sender as Rectangle, e);
-                MoverIsFree = true;
-                activeEdge = null;
+                //CountWindowPosition(DataForLastTick.sender, DataForLastTick.e);
+                //DraggingEdgeNow = false;
+                ColorChangingEdge = null;
                 DataForLastTick.sender.Opacity = 0.01;
                 timer.Stop();
             }
@@ -152,28 +146,25 @@ namespace CleanDisk24
             {
                 var edge = edges[i];
                 grid.Children.Add(edge);
-                edge.MouseDown += //EdgeMouseDown;
-                (sender, e) => dragMoveDelegate();
+                edge.Name = ((EdgeName)i).ToString();
+
                 edge.MouseDown += EdgeMouseDown;
-                edge.Name = //edgeNames[i];
-                    ((EdgeName)i).ToString();
+                edge.MouseUp += EdgeMouseUp;
+                edge.MouseDown += (sender, e) => dragMoveDelegate();
+                edge.MouseEnter += EdgeMouseEnter;
+                edge.MouseLeave += EdgeMouseLeave;
             }
         }
 
         private static Rectangle CreateEdgeRectangle()
         {
-            Rectangle currentEdge;
-            currentEdge = new Rectangle
+            Rectangle currentEdge = new Rectangle
             {
                 Fill = color,
                 Opacity = 0.01,//fullOpacityIsOnly,
             };
-            currentEdge.MouseEnter += EdgeMouseEnter;
-            currentEdge.MouseLeave += EdgeMouseLeave;
             //currentEdge.PreviewMouseDown += Edge_PreviewMouseDown;//not working
             //currentEdge.MouseDown += EdgeMouseDown; //ok/2
-
-
             return currentEdge;
         }
         private static void SetEdgePosition(Rectangle edge, int column, int row, int columnSpan, int rowSpan)
@@ -205,7 +196,7 @@ namespace CleanDisk24
         }
         private static void EdgeMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (MoverIsFree)
+            if (!DraggingEdgeNow)
             {
                 if (e.ChangedButton == MouseButton.Left)
                 {
@@ -215,8 +206,9 @@ namespace CleanDisk24
                         ParentWindow = Window.GetWindow(depObj);
                         if (ParentWindow != null)
                         {
-                            MoverIsFree = false;
-                            SaveWindowPosition(ParentWindow, e);
+                            DraggingEdgeNow = true;
+                            DraggedEdge = sender as Rectangle;
+                            SaveWindowPosition(sender as Rectangle, ParentWindow, e);
                             //***ParentWindow.DragMove();
                         }
                         else { MessageBox.Show("parent window error", "edge mouse down", MessageBoxButton.OK, MessageBoxImage.Error); }
@@ -226,17 +218,30 @@ namespace CleanDisk24
                 else { MessageBox.Show("wrong button", "edge mouse down", MessageBoxButton.OK, MessageBoxImage.Information); }
             }
         }
+        private static void EdgeMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            CountWindowPosition(sender as Rectangle, e);
+        }
 
         private static void EdgeMouseEnter(object sender, MouseEventArgs e)
         {
             stopwatch.Start();
             timer.Start();
-            activeEdge = sender as Rectangle;
+            ColorChangingEdge = sender as Rectangle;
         }
         private static void EdgeMouseLeave(object sender, MouseEventArgs e)
         {
-            LastTimerTick = true;
+            //*********LastTimerTick = true;
             DataForLastTick = new DataForLastTick(sender as Rectangle, e);
+
+            /*
+            if (sender == DraggedEdge)
+            {
+                LastTimerTick = true;
+                DataForLastTick = new DataForLastTick(sender as Rectangle, e);
+            }
+            */
+
             /*
             stopwatch.Reset();
             CountWindowPosition(sender as Rectangle, e);
@@ -246,21 +251,28 @@ namespace CleanDisk24
             ((Rectangle)sender).Opacity = 0.01;
             */
         }
-        private static void SaveWindowPosition(Window parentWindow, MouseButtonEventArgs e)
+        private static void SaveWindowPosition(Rectangle sender, Window parentWindow, MouseButtonEventArgs e)
         {
-            positionBefore = new WindowPosition(parentWindow.Left, parentWindow.Top, parentWindow.Width, parentWindow.Height, e.GetPosition(null));
+            positionBefore = new WindowPosition(parentWindow.Left, parentWindow.Top, parentWindow.Width, parentWindow.Height,
+                //e.GetPosition(null));
+                //((UIElement)sender).PointToScreen(e.GetPosition(null)));
+                MouseHooking.GetMousePosition());
         }
         private static void CountWindowPosition(Rectangle edge, MouseEventArgs e)
         {
-            double x = e.GetPosition(null).X - positionBefore.MousePos.X;
-            double y = e.GetPosition(null).Y - positionBefore.MousePos.Y;
+            //double x = e.GetPosition(null).X - positionBefore.MousePos.X;
+            //double y = e.GetPosition(null).Y - positionBefore.MousePos.Y;
+            Point MouseNow = MouseHooking.GetMousePosition();
+            double x = MouseNow.X - positionBefore.MousePos.X;
+            double y = MouseNow.Y - positionBefore.MousePos.Y;
+
 
             string edgeName = edge.Name;
 
-            if (edgeName.Contains("Top")) Top(y);
+            //if (edgeName.Contains("Top")) Top(y);
             if (edgeName.Contains("Right")) Right(x);
-            if (edgeName.Contains("Bottom")) Bottom(y);
-            if (edgeName.Contains("Left")) Left(x);
+            //if (edgeName.Contains("Bottom")) Bottom(y);
+            //if (edgeName.Contains("Left")) Left(x);
             #region trasah
             /*
             switch (edgeName)

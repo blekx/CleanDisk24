@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CleanDisk24"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000" MouseEnter="Window_MouseEnter">
+        Title="MainWindow" Height="450" Width="800" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000">
     <Grid x:Name="mainGrid" Background="#00000000">
         <Grid.RowDefinitions>
             <RowDefinition Height="{DynamicResource WindowPadding}"/>
