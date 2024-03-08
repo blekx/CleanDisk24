@@ -5,29 +5,43 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CleanDisk24"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000">
-    <Grid Background="#00000000">
+        Title="MainWindow" Height="450" Width="800" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000" MouseEnter="Window_MouseEnter">
+    <Grid x:Name="mainGrid" Background="#00000000">
         <Grid.RowDefinitions>
-            <RowDefinition Height="49*"/>
+            <RowDefinition Height="{DynamicResource WindowPadding}"/>
+            <RowDefinition Height="41*"/>
             <RowDefinition Height="41*"/>
             <RowDefinition Height="41*"/>
             <RowDefinition Height="41*"/>
             <RowDefinition Height="41*"/>
             <RowDefinition Height="88*"/>
-            <RowDefinition Height="149*"/>
+            <RowDefinition Height="117*"/>
+            <RowDefinition Height="{DynamicResource WindowPadding}"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="84*"/>
+            <ColumnDefinition Width="{DynamicResource WindowPadding}"/>
+            <ColumnDefinition Width="71*"/>
             <ColumnDefinition Width="147*"/>
             <ColumnDefinition Width="102*"/>
             <ColumnDefinition Width="356*"/>
-            <ColumnDefinition Width="111*"/>
+            <ColumnDefinition Width="84*"/>
+            <ColumnDefinition Width="{DynamicResource WindowPadding}"/>
         </Grid.ColumnDefinitions>
-        <Rectangle Fill="#CCF7F7A1" Grid.ColumnSpan="5" Grid.RowSpan="7" MouseDown="Rectangle_MouseDown"/>
-        <Button x:Name="btSetRoots" Content="Set Roots" Grid.Column="1" Grid.Row="1" Click="btSetRoots_Click"/>
-        <Button x:Name="btScanner" Content="Scanner" Grid.Column="1" Grid.Row="2"/>
-        <Button x:Name="btTest" Content="Test" Grid.Column="1" Grid.Row="4" Click="btTest_Click"/>
-        <ScrollViewer x:Name="ScrollV_TB_Log" Grid.Column="3" Grid.Row="1" Grid.RowSpan="5" HorizontalScrollBarVisibility="Auto">
+        <Rectangle Fill="#CCF7F7A1" Grid.ColumnSpan="7" Grid.RowSpan="9" MouseDown="Rectangle_MouseDown"/>
+        <!--
+        <Rectangle x:Name="edge0" Fill="#CCC83264" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="5" Grid.RowSpan="1" MouseDown="Rectangle_MouseDown"/>
+        <Rectangle x:Name="edge1" Fill="#CCC83264" Grid.Column="6" Grid.Row="0" Grid.ColumnSpan="1" Grid.RowSpan="1" MouseDown="Rectangle_MouseDown"/>
+        <Rectangle x:Name="edge2" Fill="#CCC83264" Grid.Column="6" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="7" MouseDown="Rectangle_MouseDown"/>
+        <Rectangle x:Name="edge3" Fill="#CCC83264" Grid.Column="6" Grid.Row="8" Grid.ColumnSpan="1" Grid.RowSpan="1" MouseDown="Rectangle_MouseDown"/>
+        <Rectangle x:Name="edge4" Fill="#CCC83264" Grid.Column="1" Grid.Row="8" Grid.ColumnSpan="5" Grid.RowSpan="1" MouseDown="Rectangle_MouseDown"/>
+        <Rectangle x:Name="edge5" Fill="#CCC83264" Grid.Column="0" Grid.Row="8" Grid.ColumnSpan="1" Grid.RowSpan="1" MouseDown="Rectangle_MouseDown"/>
+        <Rectangle x:Name="edge6" Fill="#CCC83264" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="7" MouseDown="Rectangle_MouseDown"/>
+        <Rectangle x:Name="edge7" Fill="#CCC83264" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="1" Grid.RowSpan="1" MouseDown="Rectangle_MouseDown"/>
+        -->
+        <Button x:Name="btSetRoots" Content="Set Roots" Grid.Column="2" Grid.Row="2" Click="btSetRoots_Click"/>
+        <Button x:Name="btScanner" Content="Scanner" Grid.Column="2" Grid.Row="3"/>
+        <Button x:Name="btTest" Content="Test" Grid.Column="2" Grid.Row="5" Click="btTest_Click"/>
+        <ScrollViewer x:Name="ScrollV_TB_Log" Grid.Column="4" Grid.Row="2" Grid.RowSpan="5" HorizontalScrollBarVisibility="Auto">
             <TextBlock x:Name="TB_Log"></TextBlock>
         </ScrollViewer>
 

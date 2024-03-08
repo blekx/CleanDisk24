@@ -7,10 +7,8 @@ using System.Windows;
 
 namespace CleanDisk24
 {
-    public interface ILoggable
-    {
-        void Log(string message);
-    }
+    /// <summary> method, usually on a Window .Log(string) </summary>
+    public interface ILoggable { void Log(string message); }
 
     public class Database
     {
@@ -80,7 +78,7 @@ namespace CleanDisk24
         }
 
         /// <summary>
-        /// Tries to send message to the window which asked to be the communicator
+        /// Tries to send message to the window which asked to be the communicator.
         /// </summary>
         /// <param name="v"></param>
         internal void Log(string message)//, ILoggable window)

@@ -23,12 +23,14 @@ namespace CleanDisk24
     {
         //public DataWorkerAgent Agent;
         private Database Database { get; }
+        private EdgeMover edgeMover;
         public MainWindow()
         {
             InitializeComponent();
             //Agent = new DataWorkerAgent(new Database(this), this);
             //DataWorker.StartupLoadData();
             Database = ((App)Application.Current).Database;
+            edgeMover = new EdgeMover(this, mainGrid);
             Log(Database.SetWindowForCommunication(this));
         }
 
@@ -84,6 +86,11 @@ namespace CleanDisk24
         {
             TB_Log.Text += Environment.NewLine + message;
             ScrollV_TB_Log.ScrollToEnd();
+        }
+
+        private void Window_MouseEnter(object sender, MouseEventArgs e)
+        {
+
         }
     }
 }
