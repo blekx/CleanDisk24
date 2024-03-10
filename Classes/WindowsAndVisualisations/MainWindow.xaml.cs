@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CleanDisk24.Classes.WindowsAndVisualisations;
 using CleanDisk24.DataWorker;
 
 namespace CleanDisk24
@@ -31,9 +32,17 @@ namespace CleanDisk24
             //DataWorker.StartupLoadData();
             Database = ((App)Application.Current).Database;
             edgeMover = new EdgeMover();
-            EdgeMover.CreateEdgesForWindow(this, mainGrid, this.DragMove);
+            EdgeMover.CreateEdgesForWindow(this, mainGrid, DragThisWindowAndLogAlsoWhichElementCaused);
+                //this.DragMove);
             //edgeMover = new EdgeMover(this, mainGrid, this.DragMove);
             Log(Database.SetWindowForCommunication(this));
+
+            #region Debugging
+            /*
+            WindowDebug windowDebug = new WindowDebug();
+            windowDebug.Show();
+            */
+            #endregion
         }
 
         private void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -41,13 +50,25 @@ namespace CleanDisk24
             Application.Current.Shutdown();
         }
 
+        public void DragThisWindowAndLogAlsoWhichElementCaused(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                this.DragMove();
+            }
+            Log((sender as Rectangle).Name.ToString() + " moving " + this.ToString());
+        }
 
-
+        /*
         private void Rectangle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
+            {
                 this.DragMove();
+                Log((sender as Rectangle).Name.ToString() + " moving");
+            }
         }
+        */
 
         private void btScanner_Click(object sender, RoutedEventArgs e)
         {

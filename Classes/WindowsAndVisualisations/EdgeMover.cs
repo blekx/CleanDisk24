@@ -10,7 +10,7 @@ using System.Windows.Threading;
 
 namespace CleanDisk24
 {
-    public delegate void DragMoveDelegate();
+    public delegate void DragMoveDelegate(object sender, MouseButtonEventArgs e);
     public struct DataForLastTick
     {
         public Rectangle sender; public MouseEventArgs e;
@@ -62,21 +62,25 @@ namespace CleanDisk24
 
         private static void TimerTick(object sender, EventArgs e)
         {
+            //(WindowForCommunication as MainWindow).bg.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCF7F7A1"));
             long timeOnEdge = stopwatch.ElapsedMilliseconds;
             if (ColorChangingEdge != null)
             {
                 ColorChangingEdge.Opacity = CountOpacity(timeOnEdge);
                 WindowForCommunication.Log(timeOnEdge.ToString() + " ms spent on edge.");
             }
-            else timer.Stop();
             if (LastTimerTick)
             {
                 stopwatch.Reset();
-                //CountWindowPosition(DataForLastTick.sender, DataForLastTick.e);
-                //DraggingEdgeNow = false;
-                ColorChangingEdge = null;
-                DataForLastTick.sender.Opacity = 0.01;
+                //ColorChangingEdge = null;
+                DataForLastTick.sender.Opacity = 0.05;
                 timer.Stop();
+                
+                if (DraggingEdgeNow)
+                {
+                    //DraggingEdgeNow = false;
+                    //CountWindowPosition(DataForLastTick.sender, DataForLastTick.e);
+                }
             }
         }
 
@@ -86,7 +90,10 @@ namespace CleanDisk24
             if (timeOnEdge > msToFullyShowEdge)
                 return 1;
             else
-                return (double)timeOnEdge / msToFullyShowEdge;
+            { double smallValue = (double)timeOnEdge / msToFullyShowEdge;
+                if (smallValue < 0.05) smallValue = 0.05;
+                return smallValue;
+            }
         }
 
         /// <summary> gpt </summary>
@@ -150,7 +157,8 @@ namespace CleanDisk24
 
                 edge.MouseDown += EdgeMouseDown;
                 edge.MouseUp += EdgeMouseUp;
-                edge.MouseDown += (sender, e) => dragMoveDelegate();
+                //edge.MouseDown += (edge, e) => dragMoveDelegate();
+                edge.MouseDown += (edge, e) => dragMoveDelegate(edge, e);
                 edge.MouseEnter += EdgeMouseEnter;
                 edge.MouseLeave += EdgeMouseLeave;
             }
@@ -196,6 +204,7 @@ namespace CleanDisk24
         }
         private static void EdgeMouseDown(object sender, MouseButtonEventArgs e)
         {
+            Log((sender as Rectangle).Name.ToString() + " EdgeMouseDown");
             if (!DraggingEdgeNow)
             {
                 if (e.ChangedButton == MouseButton.Left)
@@ -220,19 +229,26 @@ namespace CleanDisk24
         }
         private static void EdgeMouseUp(object sender, MouseButtonEventArgs e)
         {
+            Log((sender as Rectangle).Name.ToString() + " EdgeMouseUp");
             CountWindowPosition(sender as Rectangle, e);
         }
 
         private static void EdgeMouseEnter(object sender, MouseEventArgs e)
         {
+            Log((sender as Rectangle).Name.ToString() + " EdgeMouseEnter");
+            LastTimerTick = false;
+            //(WindowForCommunication as MainWindow).bg
+            (sender as Rectangle).Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCFF2233"));
             stopwatch.Start();
-            timer.Start();
             ColorChangingEdge = sender as Rectangle;
+            timer.Start();
         }
         private static void EdgeMouseLeave(object sender, MouseEventArgs e)
         {
-            //*********LastTimerTick = true;
+            Log((sender as Rectangle).Name.ToString() + " EdgeMouseLeave");
+            //(WindowForCommunication as MainWindow).bg.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CC22FF33"));
             DataForLastTick = new DataForLastTick(sender as Rectangle, e);
+            LastTimerTick = true;
 
             /*
             if (sender == DraggedEdge)
@@ -253,10 +269,12 @@ namespace CleanDisk24
         }
         private static void SaveWindowPosition(Rectangle sender, Window parentWindow, MouseButtonEventArgs e)
         {
+            /*
             positionBefore = new WindowPosition(parentWindow.Left, parentWindow.Top, parentWindow.Width, parentWindow.Height,
                 //e.GetPosition(null));
                 //((UIElement)sender).PointToScreen(e.GetPosition(null)));
                 MouseHooking.GetMousePosition());
+            */
         }
         private static void CountWindowPosition(Rectangle edge, MouseEventArgs e)
         {
@@ -313,6 +331,10 @@ namespace CleanDisk24
             static void Bottom(double y) { ParentWindow.Width += y; }
         }
 
+        private static void Log(string message)
+        {
+            WindowForCommunication.Log(message);
+        }
 
         private static readonly Dictionary<int, string> edgeNames = new Dictionary<int, string>
         {
@@ -357,5 +379,6 @@ namespace CleanDisk24
             //MouseTop = mouseTop;
             MousePos = mousePos;
         }
+        
     }
 }
