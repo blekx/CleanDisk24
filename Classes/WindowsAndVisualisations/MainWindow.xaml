@@ -6,6 +6,9 @@
         xmlns:local="clr-namespace:CleanDisk24"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="5"></WindowChrome>
+    </WindowChrome.WindowChrome>
     <Grid x:Name="mainGrid" Background="#00000000">
         <Grid.RowDefinitions>
             <RowDefinition Height="{DynamicResource WindowPadding}"/>

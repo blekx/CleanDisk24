@@ -162,6 +162,24 @@ namespace CleanDisk24
                 edge.MouseEnter += EdgeMouseEnter;
                 edge.MouseLeave += EdgeMouseLeave;
             }
+
+            Rectangle fakePixel = new Rectangle
+            {
+                Fill = color,
+                Opacity = 0.01,
+                Width = 10, 
+                Height = 10,
+            };
+            SetEdgePosition(fakePixel, 0, 0, 1, 1);
+            grid.Children.Add(fakePixel);
+            fakePixel.Name = "fakePixel";
+            
+            fakePixel.MouseDown += EdgeMouseDown;
+            fakePixel.MouseUp += EdgeMouseUp;
+            //fakePixel.MouseDown += (edge, e) => dragMoveDelegate();
+            fakePixel.MouseDown += (edge, e) => dragMoveDelegate(edge, e);
+            fakePixel.MouseEnter += EdgeMouseEnter;
+            fakePixel.MouseLeave += EdgeMouseLeave;
         }
 
         private static Rectangle CreateEdgeRectangle()
