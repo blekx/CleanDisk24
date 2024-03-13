@@ -12,10 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using CleanDisk24.Classes.WindowsAndVisualisations;
 using CleanDisk24.DataWorker;
 
-namespace CleanDisk24
+namespace CleanDisk24.Classes.Visual.Windows
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

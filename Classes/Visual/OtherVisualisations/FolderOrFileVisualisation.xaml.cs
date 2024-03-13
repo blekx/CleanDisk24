@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CleanDisk24
+namespace CleanDisk24.Classes.Visual.OtherVisualisations
 {
     /// <summary>
-    /// Interaction logic for SubitemVisualisation.xaml
+    /// Interaction logic for FolderOrFileVisualisation.xaml
     /// </summary>
-    public partial class SubitemVisualisation : UserControl
+    public partial class FolderOrFileVisualisation : UserControl
     {
-        public SubitemVisualisation()
+        public FolderOrFileVisualisation()
         {
             InitializeComponent();
         }

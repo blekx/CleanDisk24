@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace CleanDisk24
+namespace CleanDisk24.Classes.Visual.Windows
 {
     /// <summary>
     /// Interaction logic for Window1Scan.xaml

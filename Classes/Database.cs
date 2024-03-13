@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CleanDisk24.Classes.Visual.Windows;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -7,9 +8,6 @@ using System.Windows;
 
 namespace CleanDisk24
 {
-    /// <summary> method, usually on a Window .Log(string) </summary>
-    public interface ILoggable { void Log(string message); }
-
     public class Database
     {
         private ILoggable WindowForCommunication { get; set; }
@@ -51,29 +49,35 @@ namespace CleanDisk24
         /// <returns>a sentence what happened</returns>
         internal string SetWindowForCommunication(ILoggable window)
         {
-            return SetWindowForCommunication(window, false);
+            ILoggable uselessReference_PreviousWindow;
+            return SetWindowForCommunication(window, false, out uselessReference_PreviousWindow, null);
         }
         /// <summary>
         /// Tries to start a communication channel from database, OR Overwrites to new.
         /// </summary>
-        /// <param name="window"></param>
+        /// <param name="newWindow"></param>
         /// <returns>a sentence what happened</returns>
-        internal string SetWindowForCommunication(ILoggable window, bool forceOverwrite)
+        internal string SetWindowForCommunication(ILoggable newWindow, bool forceOverwrite, out ILoggable previousWindow, Action restorePreviousWindow)
         {
             if (WindowForCommunication == null)
             {
-                WindowForCommunication = window;
-                return $"Communication starts through: {(window as Window).Name}";
+                WindowForCommunication = newWindow;
+                previousWindow = null;
+                return $"Communication starts through: {(newWindow as Window).Name}";
             }
             else
             {
+                previousWindow = WindowForCommunication;
                 if (forceOverwrite)
                 {
                     string previous = (WindowForCommunication as Window).Name;
-                    WindowForCommunication = window;
-                    return $"Communication window changed from {previous} to: {(window as Window).Name}";
+                    WindowForCommunication = newWindow;
+                    return $"Communication window changed from {previous} to: {(newWindow as Window).Name}";
                 }
-                return $"Communicating already through: {(WindowForCommunication as Window).Name}";
+                else
+                {
+                    return $"Communicating already through: {(WindowForCommunication as Window).Name}";
+                }
             }
         }
 

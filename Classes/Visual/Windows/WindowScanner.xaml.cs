@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace CleanDisk24
+namespace CleanDisk24.Classes.Visual.Windows
 {
     /// <summary>
-    /// Interaction logic for FolderOrFileVisualisation.xaml
+    /// Interaction logic for WindowScanner.xaml
     /// </summary>
-    public partial class FolderOrFileVisualisation : UserControl
+    public partial class WindowScanner : Window
     {
-        public FolderOrFileVisualisation()
+        public WindowScanner()
         {
             InitializeComponent();
         }

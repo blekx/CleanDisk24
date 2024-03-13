@@ -8,9 +8,13 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace CleanDisk24
+namespace CleanDisk24.Classes.Visual.Windows
 {
     public delegate void DragMoveDelegate(object sender, MouseButtonEventArgs e);
+}
+
+namespace CleanDisk24.Classes.Visual.Windows
+{
     public struct DataForLastTick
     {
         public Rectangle sender; public MouseEventArgs e;
@@ -21,7 +25,10 @@ namespace CleanDisk24
             this.e = e;
         }
     }
+}
 
+namespace CleanDisk24.Classes.Visual.Windows
+{
     internal class EdgeMover
     {
 
@@ -305,10 +312,10 @@ namespace CleanDisk24
 
             string edgeName = edge.Name;
 
-            //if (edgeName.Contains("Top")) Top(y);
+            if (edgeName.Contains("Top")) Top(y);
             if (edgeName.Contains("Right")) Right(x);
-            //if (edgeName.Contains("Bottom")) Bottom(y);
-            //if (edgeName.Contains("Left")) Left(x);
+            if (edgeName.Contains("Bottom")) Bottom(y);
+            if (edgeName.Contains("Left")) Left(x);
             #region trasah
             /*
             switch (edgeName)
@@ -397,6 +404,6 @@ namespace CleanDisk24
             //MouseTop = mouseTop;
             MousePos = mousePos;
         }
-        
+
     }
 }
