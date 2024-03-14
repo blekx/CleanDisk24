@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Windows.Media;
 
-namespace CleanDisk24
+namespace CleanDisk24.Classes.Visual.Colors
 {
     public static class ColorCreator
     {

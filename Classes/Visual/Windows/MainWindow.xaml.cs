@@ -12,7 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using CleanDisk24.Database;
 using CleanDisk24.DataWorker;
+
 
 namespace CleanDisk24.Classes.Visual.Windows
 {
@@ -22,18 +24,23 @@ namespace CleanDisk24.Classes.Visual.Windows
     public partial class MainWindow : Window, ILoggable
     {
         //public DataWorkerAgent Agent;
-        private Database Database { get; }
+        private DB Database { get; }
         private EdgeMover edgeMover;
+        private bool manualEdgedragging = false;
+
         public MainWindow()
         {
             InitializeComponent();
-            //Agent = new DataWorkerAgent(new Database(this), this);
+            //Agent = new DataWorkerAgent(new DB(this), this);
             //DataWorker.StartupLoadData();
             Database = ((App)Application.Current).Database;
-            edgeMover = new EdgeMover();
-            EdgeMover.CreateEdgesForWindow(this, mainGrid, DragThisWindowAndLogAlsoWhichElementCaused);
+            if (manualEdgedragging)
+            {
+                edgeMover = new EdgeMover();
+                EdgeMover.CreateEdgesForWindow(this, mainGrid, DragThisWindowAndLogAlsoWhichElementCaused);
                 //this.DragMove);
-            //edgeMover = new EdgeMover(this, mainGrid, this.DragMove);
+                //edgeMover = new EdgeMover(this, mainGrid, this.DragMove);
+            }
             Log(Database.SetWindowForCommunication(this));
 
             #region Debugging

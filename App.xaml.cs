@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CleanDisk24.Database;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,12 +14,12 @@ namespace CleanDisk24
     /// </summary>
     public partial class App : Application
     {
-        public Database Database { get; private set; }
+        public DB Database { get; private set; }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Database = new Database();
+            Database = new DB();
         }
     }
 }

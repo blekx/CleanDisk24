@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using CleanDisk24.Database;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -7,10 +8,10 @@ namespace CleanDisk24.DataWorker
 {
     public static partial class DataWorkerAgent
     {
-        //private Database DB;
+        //private DB DB;
         //public MainWindow mw;
         /*
-        public DataWorkerAgent(Database dB, MainWindow mw)
+        public DataWorkerAgent(DB dB, MainWindow mw)
         {
             this.DB = dB;// ?? throw new ArgumentNullException(nameof(dB));
             this.mw = mw;// ?? throw new ArgumentNullException(nameof(mw));
@@ -18,7 +19,7 @@ namespace CleanDisk24.DataWorker
         */
 
         /// <summary>Displays all roots from DB.</summary>
-        public static ObservableCollection<MyRootPlace> GetAllRoots(Database DB)
+        public static ObservableCollection<MyRootPlace> GetAllRoots(DB DB)
         {
             ObservableCollection<MyRootPlace> oc = new ObservableCollection<MyRootPlace>();
             foreach (MyRootPlace root in DB.AllRoots)
@@ -27,12 +28,12 @@ namespace CleanDisk24.DataWorker
             return oc;
         }
         /// <summary>Displays all Hard drives from DB.</summary>
-        internal static ObservableCollection<MyRootDrive> GetAllDiscs(Database DB) => DB.AllRootDrives;
+        internal static ObservableCollection<MyRootDrive> GetAllDiscs(DB DB) => DB.AllRootDrives;
 
         private static ObservableCollection<DriveInfo> FindAllUnits() => new ObservableCollection<DriveInfo>(DriveInfo.GetDrives());
 
         ///<summary>Gets Drives and adds an example Directory. Into: DB.AllRoots </summary>
-        public static void ResetAllRoots(Database DB)
+        public static void ResetAllRoots(DB DB)
         {
             ObservableCollection<DriveInfo> allNew = FindAllUnits();
             ObservableCollection<MyRootPlace> result = new ObservableCollection<MyRootPlace>();
@@ -47,9 +48,9 @@ namespace CleanDisk24.DataWorker
         }
 
         //private void AddExampleDirectoryTo_DB_AllRoots()
-        private static void AddExampleDirectoryTo(ObservableCollection<MyRootPlace> destination, Database DB)
+        private static void AddExampleDirectoryTo(ObservableCollection<MyRootPlace> destination, DB DB)
         {
-            List<MyRootDirectory> list = new List<MyRootDirectory>() { Database.prodigyNTB, Database.prodigyPC };
+            List<MyRootDirectory> list = new List<MyRootDirectory>() { DB.prodigyNTB, DB.prodigyPC };
             foreach (MyRootDirectory rootDirectory in list)
                 if (Directory.Exists(rootDirectory.WholePath))
                 {
@@ -60,10 +61,10 @@ namespace CleanDisk24.DataWorker
                 }
         }
 
-        public static void AddDirectoryToDBList(MyDirectory md, Database DB) => DB.AllDirectories.Add(md);
+        public static void AddDirectoryToDBList(MyDirectory md, DB DB) => DB.AllDirectories.Add(md);
 
         ///<summary>Finds parent in DB (or creates). Returns null, if given directory is top level.</summary>
-        private static MyPlace FindOrCreateParentDirectoryOf(DirectoryInfo directory, Database DB)
+        private static MyPlace FindOrCreateParentDirectoryOf(DirectoryInfo directory, DB DB)
         {
             DirectoryInfo parent = directory.Parent;
             if (parent == null) return null;
@@ -103,7 +104,7 @@ namespace CleanDisk24.DataWorker
         }
 
 
-        private static MyRootDrive FindOrCreateRootDrive(DirectoryInfo directory, Database DB)
+        private static MyRootDrive FindOrCreateRootDrive(DirectoryInfo directory, DB DB)
             //=> DB.AllRoots.FirstOrDefault(mp => mp.Name == directory.Name && mp.GetType() == typeof(MyRootDrive)) as MyRootDrive
             => DB.AllRootDrives.FirstOrDefault(root => root.Name == directory.Root.Name)
             ?? CreateMyRootDriveImage(directory);
@@ -115,11 +116,11 @@ namespace CleanDisk24.DataWorker
         }
 
         ///<summary>Returns the root from DB, which represents this DirectoryInfo. Or creates a new RootDrive.</summary>
-        private static MyRootDrive ThisRootDrive(DirectoryInfo directory, Database DB)
+        private static MyRootDrive ThisRootDrive(DirectoryInfo directory, DB DB)
             => FindOrCreateRootDrive(directory, DB);// as MyRootDrive;
 
         ///<summary>Can be root</summary>
-        public static MyPlace CreateMyDirectoryImage(DirectoryInfo directory, Database DB)
+        public static MyPlace CreateMyDirectoryImage(DirectoryInfo directory, DB DB)
         {
             MyPlace parent = FindOrCreateParentDirectoryOf(directory, DB);
             if (parent == null)

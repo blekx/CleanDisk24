@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CleanDisk24.Database;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -10,16 +11,16 @@ namespace CleanDisk24.DataWorker
 {
     public static partial class DataWorkerAgent
     {
-        // private MyPlace Browser1 = Database.emptyFakeRoot;
-        // private MyPlace Browser2 = Database.emptyFakeRoot;
-        private static MyPlace Browser1 = Database.prodigyNTB;
-        private static MyPlace Browser2 = Database.prodigyPC;
+        // private MyPlace Browser1 = DB.emptyFakeRoot;
+        // private MyPlace Browser2 = DB.emptyFakeRoot;
+        private static MyPlace Browser1 = DB.prodigyNTB;
+        private static MyPlace Browser2 = DB.prodigyPC;
 
-        public static async void SetBrowsedDirectory(MyPlace source, MyPlace area, Database DB)//attepmt for universal solution/useless
+        public static async void SetBrowsedDirectory(MyPlace source, MyPlace area, DB DB)//attepmt for universal solution/useless
         {
             area = await ScanAndAdd_Only_OneDirectory_async(source, DB);
         }
-        public static async Task<string> SetBrowser1_async(MyPlace selectedDirectory, Database DB) // Remake REF ...or no
+        public static async Task<string> SetBrowser1_async(MyPlace selectedDirectory, DB DB) // Remake REF ...or no
         {
             string setDirResult = $"Browser 1 unable to set {selectedDirectory}";
             if (Directory.Exists(selectedDirectory.WholePath)) //strange check
@@ -31,11 +32,11 @@ namespace CleanDisk24.DataWorker
             }
             return setDirResult;
         }
-        public static async void SetBrowser2(MyPlace selectedDirectory, Database DB)
+        public static async void SetBrowser2(MyPlace selectedDirectory, DB DB)
         {
             Browser2 = await ScanAndAdd_Only_OneDirectory_async(selectedDirectory, DB);
         }
-        public static ObservableCollection<MyRootPlace> GetChosenRoots(Database DB) => DB.SetOfChosenRoots;
+        public static ObservableCollection<MyRootPlace> GetChosenRoots(DB DB) => DB.SetOfChosenRoots;
         public static ObservableCollection<MyItemDirectoryOrFile> GetDirectoryChildren_RootsSub()
             => new ObservableCollection<MyItemDirectoryOrFile>(Browser1.Items);
         public static ObservableCollection<MyItemDirectoryOrFile> GetDirectoryChildren_ChosenSub()
@@ -46,7 +47,7 @@ namespace CleanDisk24.DataWorker
         /// </summary>
         /// <param name="directoryImage"></param>
         /// <returns></returns>
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(MyPlace directoryImage, Database DB)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(MyPlace directoryImage, DB DB)
         {
             /*
             string givenPath;
@@ -66,7 +67,7 @@ namespace CleanDisk24.DataWorker
         /// </summary>
         /// <param name="scannedDirectory"></param>
         /// <returns></returns>
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DirectoryInfo scannedDirectory, Database DB)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DirectoryInfo scannedDirectory, DB DB)
         {
             MyPlace directoryImage = CreateMyDirectoryImage(scannedDirectory, DB);
             DuoDirInfo currentlyScannedDirectory = new DuoDirInfo(directoryImage, scannedDirectory);
@@ -77,7 +78,7 @@ namespace CleanDisk24.DataWorker
         /// </summary>
         /// <param name="currentlyScannedDirectory" class="DuoDirInfo"></param>
         /// <returns></returns>
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async_Old(DuoDirInfo currentlyScannedDirectory, Database DB)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async_Old(DuoDirInfo currentlyScannedDirectory, DB DB)
         {
             // 1/2 Directories:
             DirectoryInfo[] moreDirInfos = await ScanDirectory_Async(currentlyScannedDirectory);
@@ -93,7 +94,7 @@ namespace CleanDisk24.DataWorker
             }
             return currentlyScannedDirectory.MyPlace;
         }
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async_Attempt2didntWorkWell(DuoDirInfo currentlyScannedDirectory, Database DB)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async_Attempt2didntWorkWell(DuoDirInfo currentlyScannedDirectory, DB DB)
         {
             /*
             Task<int> MoreFiles = Task.Run(async () =>
@@ -111,7 +112,7 @@ namespace CleanDisk24.DataWorker
             DB.Log($"{filesAdded.ToString()} files added in {currentlyScannedDirectory}");
             return currentlyScannedDirectory.MyPlace;
         }
-        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory, Database DB)
+        public static async Task<MyPlace> ScanAndAdd_Only_OneDirectory_async(DuoDirInfo currentlyScannedDirectory, DB DB)
         {
             DirectoryInfo[] moreDirInfos = await ScanDirectory_Async(currentlyScannedDirectory);
             foreach (DirectoryInfo foundDirInfo in moreDirInfos)

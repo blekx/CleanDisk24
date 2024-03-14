@@ -6,14 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 
-namespace CleanDisk24
+namespace CleanDisk24.Database
 {
-    public class Database
+    public class DB
     {
         private ILoggable WindowForCommunication { get; set; }
         private MainWindow mw;
-        public Database(MainWindow mw) { this.mw = mw; }
-        public Database() { }
+        public DB(MainWindow mw) { this.mw = mw; }
+        public DB() { }
 
         ///<summary>Resets the   AllRootDrives on "set{}"</summary>
         private ObservableCollection<MyRootPlace> _allRoots;         //ok
@@ -25,7 +25,7 @@ namespace CleanDisk24
                 {
                     string message = "There was no Root directory at all.";
                     //System.Windows.MessageBox.Show(message);
-                    mw.Log(message);
+                    Log(message);
 
                     _allRoots = new ObservableCollection<MyRootPlace>();
                     _allRoots.Add(defaultRootDrive);

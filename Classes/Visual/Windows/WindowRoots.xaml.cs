@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using CleanDisk24.Database;
 using CleanDisk24.DataWorker;
 
 namespace CleanDisk24.Classes.Visual.Windows
@@ -23,8 +24,8 @@ namespace CleanDisk24.Classes.Visual.Windows
     public partial class WindowRoots : Window, ILoggable
     {
         public MainWindow mw;
-        private Database Database { get; }
-        //public Database DB;
+        private DB Database { get; }
+        //public DB DB;
         System.Diagnostics.Stopwatch stopwatch_ForLog;
         private enum LoggingWay { thisWindow, Database, };
         private LoggingWay loggingWay = LoggingWay.thisWindow;
