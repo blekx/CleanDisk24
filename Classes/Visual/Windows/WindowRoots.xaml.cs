@@ -31,6 +31,174 @@ namespace CleanDisk24.Classes.Visual.Windows
         private LoggingWay loggingWay = LoggingWay.thisWindow;
         private ILoggable previousWindowForCommunicationFromDatabase;
         private System.Timers.Timer TimerCloser { get; set; }
+        /// <summary> In case some item was removed from the list, there is a way to give it back. </summary>
+        private enum RemovingState
+        {
+            ///<summary> WGB </summary>
+            WaitingToConfirmRemovalOrGiveBackItemToList,
+            ///<summary> Not Waiting for any confirmation to remove item from list. </summary>
+            NotWGB,
+            ///<summary> Ctrl pressed + Waiting to confirm removal Or to give item back to list </summary>
+            C_WGB,
+            ///<summary> Ctrl pressed + Not Waiting for any confirmation to remove item from list. </summary>
+            C_NWGB,
+        }
+        private RemovingState state = RemovingState.NotWGB;
+        private RemovingState StateWrong
+        {
+            get => state;
+            set
+            {
+                switch (state)
+                {
+                    case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                        switch (value)
+                        {
+                            case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                                // Perform action for staying in the same state
+                                break;
+                            case RemovingState.NotWGB:
+                                // Perform action for transitioning to NotWGB state
+                                break;
+                            case RemovingState.C_WGB:
+                                // Perform action for transitioning to C_WGB state
+                                break;
+                            case RemovingState.C_NWGB:
+                                // Perform action for transitioning to C_NWGB state
+                                break;
+                        }
+                        break;
+                    case RemovingState.NotWGB:
+                        switch (value)
+                        {
+                            case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                                // Perform action for transitioning to WaitingToConfirm state
+                                break;
+                            case RemovingState.NotWGB:
+                                // Perform action for staying in the same state
+                                break;
+                            case RemovingState.C_WGB:
+                                // Perform action for transitioning to C_WGB state
+                                break;
+                            case RemovingState.C_NWGB:
+                                // Perform action for transitioning to C_NWGB state
+                                break;
+                        }
+                        break;
+                    case RemovingState.C_WGB:
+                        switch (value)
+                        {
+                            case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                                // Perform action for transitioning to WaitingToConfirm state
+                                break;
+                            case RemovingState.NotWGB:
+                                // Perform action for transitioning to NotWGB state
+                                break;
+                            case RemovingState.C_WGB:
+                                // Perform action for staying in the same state
+                                break;
+                            case RemovingState.C_NWGB:
+                                // Perform action for transitioning to C_NWGB state
+                                break;
+                        }
+                        break;
+                    case RemovingState.C_NWGB:
+                        switch (value)
+                        {
+                            case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                                // Perform action for transitioning to WaitingToConfirm state
+                                break;
+                            case RemovingState.NotWGB:
+                                // Perform action for transitioning to NotWGB state
+                                break;
+                            case RemovingState.C_WGB:
+                                // Perform action for transitioning to C_WGB state
+                                break;
+                            case RemovingState.C_NWGB:
+                                // Perform action for staying in the same state
+                                break;
+                        }
+                        break;
+                }
+            }
+
+        }
+
+        private RemovingState State
+        {
+            get => state;
+            set
+            {
+                switch (state)
+                {
+                    case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                        switch (value)
+                        {
+                            case RemovingState.NotWGB:                                
+                                // No more waiting
+                                break;
+                            case RemovingState.C_WGB:
+                                // Ctrl pressed
+                                break;
+                            case RemovingState.C_NWGB:
+                                // Ctrl pressed
+                                // No more waiting
+                                throw new Exception("Too many state changes at once.");
+                                break;
+                        }
+                        break;
+                    case RemovingState.NotWGB:
+                        switch (value)
+                        {
+                            case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                                // Waiting to give back item
+                                break;
+                            case RemovingState.C_WGB:
+                                // Ctrl pressed
+                                // Waiting to give back item
+                                throw new Exception("Too many state changes at once.");
+                                break;
+                            case RemovingState.C_NWGB:
+                                // Ctrl pressed
+                                break;
+                        }
+                        break;
+                    case RemovingState.C_WGB:
+                        switch (value)
+                        {
+                            case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                                // Ctrl released
+                                break;
+                            case RemovingState.NotWGB:
+                                // Ctrl released
+                                // No more waiting
+                                throw new Exception("Too many state changes at once.");
+                                break;
+                            case RemovingState.C_NWGB:
+                                // No more waiting
+                                break;
+                        }
+                        break;
+                    case RemovingState.C_NWGB:
+                        switch (value)
+                        {
+                            case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
+                                // Ctrl released
+                                // Waiting to give back item
+                                throw new Exception("Too many state changes at once.");
+                                break;
+                            case RemovingState.NotWGB:
+                                // Ctrl released
+                                break;
+                            case RemovingState.C_WGB:                               
+                                // Waiting to give back item
+                                break;
+                        }
+                        break;
+                }
+                state = value; // Update the state after processing
+            }
+        }
 
         public WindowRoots(MainWindow mainWindow)
         {
@@ -43,9 +211,10 @@ namespace CleanDisk24.Classes.Visual.Windows
             stopwatch_ForLog = new System.Diagnostics.Stopwatch();
             stopwatch_ForLog.Start();
             Log(Database.SetWindowForCommunication(this, true, out previousWindowForCommunicationFromDatabase, RestorePreviousWindowCommunicatingFromDB));
-
+            RemovingState state = RemovingState.NotWGB;
         }
 
+        #region Window Start and End
         private void RestorePreviousWindowCommunicatingFromDB()
         {
             Log($"Will back again communicate by: {(previousWindowForCommunicationFromDatabase as Window).Name}");
@@ -93,20 +262,43 @@ namespace CleanDisk24.Classes.Visual.Windows
                 this.DragMove();
         }
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Prevent the window from closing immediately
+            e.Cancel = true;
+
+            // Start a timer to delay the actual closing
+            TimerCloser = new Timer(3000); // 3000 milliseconds = 3 seconds
+            TimerCloser.Elapsed += TimerCloser_Elapsed;
+            TimerCloser.AutoReset = false; // Only fire the event once
+            TimerCloser.Start();
+            RestorePreviousWindowCommunicatingFromDB();
+            //System.Threading.Thread.Sleep(3000);
+        }
+        private void TimerCloser_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            // Close the window after the delay
+            Dispatcher.Invoke(() =>
+            {
+                Closing -= Window_Closing;
+                Close();
+            });
+        }
+        #endregion
+
+        /// <summary> Panel 1, Click on one of the ROOTS </summary>
         private async void LbChooseDirectory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // from panel 1: into panel 2 scan the chosen directory
+            // opposite to doubleclick, which adds the item into the list (into panel 3)
+
             string brokenSays = "nothing";
             //
             brokenSays = await Broken_LbChooseDirectory_SelectionChanged(sender, e);
             Log("broken methood compleeted and: " + brokenSays);
         }
 
-
-        /// <summary>
-        /// Click on one of the ROOTS
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <summary> Panel 1, Click on one of the ROOTS </summary>
         private async Task<string> Broken_LbChooseDirectory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string result = "Bad";
@@ -132,27 +324,99 @@ namespace CleanDisk24.Classes.Visual.Windows
             return result;
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        /// <summary> Panel 1 </summary>        
+        private void lbChooseDirectory_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // Prevent the window from closing immediately
-            e.Cancel = true;
-
-            // Start a timer to delay the actual closing
-            TimerCloser = new Timer(3000); // 3000 milliseconds = 3 seconds
-            TimerCloser.Elapsed += Timer_Elapsed;
-            TimerCloser.AutoReset = false; // Only fire the event once
-            TimerCloser.Start();
-            RestorePreviousWindowCommunicatingFromDB();
-            //System.Threading.Thread.Sleep(3000);
+            // add item to list, if not already there
+            AddRootDirectory((sender as ListBox).SelectedItem as MyRootPlace);
         }
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+
+        /// <summary> Panel 2-Head, Browse Up </summary>
+        private void lbChooseDirectory_SubHead_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            // Close the window after the delay
-            Dispatcher.Invoke(() =>
+
+        }
+
+        /// <summary> Panel 2-Head, Ctrl+Click => Add </summary>
+        private void lbChooseDirectory_SubHead_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (State == RemovingState.C_NWGB)
             {
-                Closing -= Window_Closing;
-                Close();
-            });
+                AddRootDirectory((sender as ListBox).SelectedItem as MyRootPlace);
+            }
+            //or stop waiting for possible recovery of the removed item:
+            if (State == RemovingState.C_WGB)
+            {
+                State = RemovingState.C_NWGB;
+            }
+        }
+
+        /// <summary> Panel 2, DBClick_BrowseSub </summary>
+        private void lbChooseDirectory_Sub_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        /// <summary> Panel 2, DBClick_BrowseSub Ctrl+Click => Add</summary>
+        private void lbChooseDirectory_Sub_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (State == RemovingState.C_NWGB)
+            {
+                AddRootDirectory((sender as ListBox).SelectedItem as MyRootPlace);
+            }
+            //or stop waiting for possible recovery of the removed item:
+            if (State == RemovingState.C_WGB)
+            {
+                State = RemovingState.C_NWGB;
+            }
+        }
+
+        /// <summary> Panel 3, Click on one of the ROOTS </summary>
+        private void lbChoosenDirectories_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //from panel 3: into panel 4 scan the chosen directory
+            // check: ((( opposite to doubleclick, which removes the item )))
+
+        }
+
+        /// <summary> Panel 3, DB Click on one of the ROOTS </summary>
+        private void lbChoosenDirectories_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            //DBClick_Remove + Target Panel4_Head to create GiveBack item
+           
+        }
+
+        /// <summary> Panel 4_Head, DBClick_(!GiveBackWaiting)_ParentDirectoryInBrowser+(GBW)_GiveBack,  </summary>
+        private void lbChoosenDirectory_SubHead_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        /// <summary> Panel 4_Head, (GBW)CtrlClick_GiveBack+(!GBW)_GBW=>true) </summary>
+        private void lbChoosenDirectory_SubHead_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        /// <summary> Panel 4, (Browser): (!GBW)DBClick_BrowseSub+(GBW)_GBW=>false,   </summary>
+        private void lbChoosenDirectories_Sub_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        /// <summary> Panel 4, (Browser): (!GBW)CtrlClick_Add, (GiveBackWaiting)=> all red,  </summary>
+        private void lbChoosenDirectories_Sub_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void AddRootDirectory(MyRootPlace myRootPlace)
+        {
+            if ("Not yet in the list")
+            {
+
+            }
+            throw new NotImplementedException();
         }
     }
 }

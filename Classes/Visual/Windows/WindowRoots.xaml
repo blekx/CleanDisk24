@@ -10,8 +10,9 @@
     <Grid Background="#00000000">
         <Grid.RowDefinitions>
             <RowDefinition Height="{StaticResource WindowPadding}"/>
-            <RowDefinition Height="20*"/>
-            <RowDefinition Height="125*"/>
+            <RowDefinition Height="57*"/>
+            <RowDefinition Height="89*"/>
+            <RowDefinition Height="264*"/>
             <RowDefinition Height="{StaticResource WindowPadding}"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -25,16 +26,20 @@
             <ColumnDefinition Width="21*"/>
             <ColumnDefinition Width="{StaticResource WindowPadding}"/>
         </Grid.ColumnDefinitions>
-        <Rectangle Fill="#CCF7F7A1" MouseDown="Rectangle_MouseDown" Grid.ColumnSpan="9" Grid.RowSpan="4"/>
+        <Rectangle Fill="#CCF7F7A1" MouseDown="Rectangle_MouseDown" Grid.ColumnSpan="9" Grid.RowSpan="5"/>
+        
+        <!--#region Log-->
         <ScrollViewer x:Name="SVLog" Grid.Column="2" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="3" HorizontalAlignment="Right" Width="350" Height="35">
             <TextBox x:Name="TextBoxLog" Background="#00FFFFFF" Text="" TextWrapping="Wrap"/>
         </ScrollViewer>
+        <!--#endregion-->     
         <TextBlock Grid.Column="2" Grid.Row="1"><Run Text="Available "/><Run Text="root directories"/><Run Text=":"/></TextBlock>
-        <ScrollViewer Grid.Column="2" Grid.Row="2">
+        <!--#region Panel 1 (Roots): DBClick_Add, Select_Browse-->
+        <ScrollViewer Grid.Column="2" Grid.Row="2" Grid.RowSpan="2">
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
             </ScrollViewer.Resources>
-            <ListBox x:Name="lbChooseDirectory" ItemsSource="{Binding ModelRoots}" SelectionChanged="LbChooseDirectory_SelectionChanged">
+            <ListBox x:Name="lbChooseDirectory" ItemsSource="{Binding ModelRoots}" SelectionChanged="LbChooseDirectory_SelectionChanged" MouseDoubleClick="lbChooseDirectory_MouseDoubleClick">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -45,11 +50,13 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </ScrollViewer>
+        <!--#endregion-->
+        <!--#region Head 1: DBClick_ParentDirectoryInBrowser, CtrlClick_Add-->
         <ScrollViewer Grid.Column="3" Grid.Row="2">
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
             </ScrollViewer.Resources>
-            <ListBox x:Name="lbChooseDirectory_Sub" ItemsSource="{Binding ModelRoots_Sub}">
+            <ListBox x:Name="lbChooseDirectory_SubHead" ItemsSource="{Binding ModelRoots_Sub}" MouseDoubleClick="lbChooseDirectory_SubHead_MouseDoubleClick" MouseLeftButtonUp="lbChooseDirectory_SubHead_MouseLeftButtonUp">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -61,12 +68,32 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </ScrollViewer>
-        <TextBlock Grid.Column="5" Grid.Row="1"><Run Text="Chosen "/><Run Text="roots"/><Run Text=":"/></TextBlock>
-        <ScrollViewer Grid.Column="5" Grid.Row="2">
+        <!--#endregion-->
+        <!--#region Panel 2 (Browser): DBClick_BrowseSub, CtrlClick_Add-->
+        <ScrollViewer Grid.Column="3" Grid.Row="3">
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
             </ScrollViewer.Resources>
-            <ListBox x:Name="lbChoosenDirectories" ItemsSource="{Binding ModelChosenRoots}">
+            <ListBox x:Name="lbChooseDirectory_Sub" ItemsSource="{Binding ModelRoots_Sub}" MouseDoubleClick="lbChooseDirectory_Sub_MouseDoubleClick" MouseLeftButtonUp="lbChooseDirectory_Sub_MouseLeftButtonUp">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <local:FolderOrFileVisualisation/>
+                            <TextBlock Text="{Binding Name}"/>
+                            <local:SubitemVisualisation/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        <!--#endregion-->
+        <TextBlock Grid.Column="5" Grid.Row="1"><Run Text="Chosen "/><Run Text="roots"/><Run Text=":"/></TextBlock>
+        <!--#region Panel 3: DBClick_Remove+TargetHeadtoGiveBack, (!GBW)Select_Browse+(GBW)_GBW=>false-->
+        <ScrollViewer Grid.Column="5" Grid.Row="2" Grid.RowSpan="2">
+            <ScrollViewer.Resources>
+                <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
+            </ScrollViewer.Resources>
+            <ListBox x:Name="lbChoosenDirectories" ItemsSource="{Binding ModelChosenRoots}" SelectionChanged="lbChoosenDirectories_SelectionChanged" MouseDoubleClick="lbChoosenDirectories_MouseDoubleClick">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -77,11 +104,31 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </ScrollViewer>
+        <!--#endregion-->
+        <!--#region Head 2: DBClick_(!GiveBackWaiting)_ParentDirectoryInBrowser+(GBW)_GiveBack, (GBW)CtrlClick_GiveBack+(!GBW)_GBW=>true)-->
         <ScrollViewer Grid.Column="6" Grid.Row="2">
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
             </ScrollViewer.Resources>
-            <ListBox x:Name="lbChoosenDirectories_Sub" ItemsSource="{Binding ModelChosen_Sub}">
+            <ListBox x:Name="lbChoosenDirectory_SubHead" ItemsSource="{Binding ModelRoots_Sub}" MouseDoubleClick="lbChoosenDirectory_SubHead_MouseDoubleClick" MouseLeftButtonUp="lbChoosenDirectory_SubHead_MouseLeftButtonUp">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <local:FolderOrFileVisualisation/>
+                            <TextBlock Text="{Binding Name}"/>
+                            <local:SubitemVisualisation/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+        <!--#endregion-->
+        <!--#region Panel 4 (Browser): (!GBW)DBClick_BrowseSub+(GBW)_GBW=>false, (!GBW)CtrlClick_Add, (GiveBackWaiting)=> all red, -->
+        <ScrollViewer Grid.Column="6" Grid.Row="3" >
+            <ScrollViewer.Resources>
+                <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
+            </ScrollViewer.Resources>
+            <ListBox x:Name="lbChoosenDirectories_Sub" ItemsSource="{Binding ModelChosen_Sub}" MouseDoubleClick="lbChoosenDirectories_Sub_MouseDoubleClick" MouseLeftButtonUp="lbChoosenDirectories_Sub_MouseLeftButtonUp">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -92,6 +139,6 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </ScrollViewer>
-
+        <!--#endregion-->
     </Grid>
 </Window>
