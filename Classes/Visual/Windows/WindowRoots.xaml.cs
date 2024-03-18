@@ -129,10 +129,10 @@ namespace CleanDisk24.Classes.Visual.Windows
             get => state;
             set
             {
-                switch (state)
+                switch (state) // <---From the current state...
                 {
                     case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
-                        switch (value)
+                        switch (value) // ...into a new state:
                         {
                             case RemovingState.NotWGB:                                
                                 // No more waiting
@@ -286,6 +286,7 @@ namespace CleanDisk24.Classes.Visual.Windows
         }
         #endregion
 
+        #region Panels events
         /// <summary> Panel 1, Click on one of the ROOTS </summary>
         private async void LbChooseDirectory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -409,12 +410,17 @@ namespace CleanDisk24.Classes.Visual.Windows
         {
 
         }
+        #endregion
 
         private void AddRootDirectory(MyRootPlace myRootPlace)
         {
-            if ("Not yet in the list")
+            if (DataWorkerAgent.IsInChosenRoots(myRootPlace, Database))
             {
-
+                //highlight in panel 4
+            }
+            else
+            {
+                DataWorkerAgent.AddToChosenRoots(myRootPlace, Database);
             }
             throw new NotImplementedException();
         }

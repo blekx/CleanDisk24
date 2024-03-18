@@ -42,6 +42,7 @@ namespace CleanDisk24.Database
             }
         }
 
+        #region Communication, LOGging
         /// <summary>
         /// Tries to start a communication channel from database
         /// </summary>
@@ -92,8 +93,9 @@ namespace CleanDisk24.Database
             window.Log(message);*/
             WindowForCommunication.Log(message);
         }
+        #endregion
 
-        public ObservableCollection<MyRootPlace> SetOfChosenRoots;
+        public ObservableCollection<MyRootPlace> SetOfChosenRoots { get; set; }
 
         ///<summary>Gets set by AllRoots change</summary>
         public ObservableCollection<MyRootDrive> AllRootDrives { get; private set; } = new ObservableCollection<MyRootDrive>();

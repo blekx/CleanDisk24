@@ -1,4 +1,5 @@
 ﻿using CleanDisk24.Database;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -132,6 +133,16 @@ namespace CleanDisk24.DataWorker
         public static MyDirectory CreateMyDirectoryImage(MyPlace parent, DirectoryInfo directory)
         {
             return new MyDirectory(parent, directory); ;
+        }
+
+        public static bool IsInChosenRoots(MyRootPlace myRootPlace, DB database)
+        {
+            return database.SetOfChosenRoots.Contains(myRootPlace);
+        }
+
+        internal static void AddToChosenRoots(MyRootPlace myRootPlace, DB database)
+        {
+            database.SetOfChosenRoots.Add(myRootPlace);
         }
     }
     //public static class MyDirectoryEstensions

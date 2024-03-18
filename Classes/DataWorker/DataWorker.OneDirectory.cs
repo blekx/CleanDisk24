@@ -14,7 +14,7 @@ namespace CleanDisk24.DataWorker
         // private MyPlace Browser1 = DB.emptyFakeRoot;
         // private MyPlace Browser2 = DB.emptyFakeRoot;
         private static MyPlace Browser1 = DB.prodigyNTB;
-        private static MyPlace Browser2 = DB.prodigyPC;
+        private static MyPlace Browser2 { get; set; } = DB.prodigyPC;
 
         public static async void SetBrowsedDirectory(MyPlace source, MyPlace area, DB DB)//attepmt for universal solution/useless
         {
