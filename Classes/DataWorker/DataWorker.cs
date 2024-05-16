@@ -144,6 +144,7 @@ namespace CleanDisk24.DataWorker
         {
             database.SetOfChosenRoots.Add(myRootPlace);
         }
+
     }
     //public static class MyDirectoryEstensions
     //{
