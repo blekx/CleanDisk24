@@ -84,5 +84,7 @@ class Program
         public ObservableCollection<MyItemDirectoryOrFile> ModelRoots_Sub => TestModelItems; //DB.GetDirectoryChildren_RootsSub(); // panel 2/4
         public ObservableCollection<MyRootPlace> ModelChosenRoots => DataWorkerAgent.GetAllRoots(DB);// DB.GetChosenRoots(); // panel 3/4
         public ObservableCollection<MyItemDirectoryOrFile> ModelChosen_Sub => DataWorkerAgent.GetDirectoryChildren_ChosenSub(); // panel 4/4
+        public MyPlace ModelRootsHead => DataWorkerAgent.GetBrowser2Directory(DB);
+        public MyPlace ModelChosenRootsHead => DataWorkerAgent.GetBrowser2Directory(DB);
     }
 }

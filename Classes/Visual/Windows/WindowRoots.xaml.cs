@@ -31,6 +31,7 @@ namespace CleanDisk24.Classes.Visual.Windows
         private LoggingWay loggingWay = LoggingWay.thisWindow;
         private ILoggable previousWindowForCommunicationFromDatabase;
         private System.Timers.Timer TimerCloser { get; set; }
+        //private int ClickedOnNone
         /// <summary> In case some item was removed from the list, there is a way to give it back. </summary>
         private enum RemovingState
         {
@@ -134,7 +135,7 @@ namespace CleanDisk24.Classes.Visual.Windows
                     case RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList:
                         switch (value) // ...into a new state:
                         {
-                            case RemovingState.NotWGB:                                
+                            case RemovingState.NotWGB:
                                 // No more waiting
                                 break;
                             case RemovingState.C_WGB:
@@ -190,7 +191,7 @@ namespace CleanDisk24.Classes.Visual.Windows
                             case RemovingState.NotWGB:
                                 // Ctrl released
                                 break;
-                            case RemovingState.C_WGB:                               
+                            case RemovingState.C_WGB:
                                 // Waiting to give back item
                                 break;
                         }
@@ -253,6 +254,7 @@ namespace CleanDisk24.Classes.Visual.Windows
 
         private void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            // if (e.OriginalSource == WindowBackground) //other way is on the panels: preview=>e.Handled=true;
             this.Close();
         }
 
@@ -297,6 +299,8 @@ namespace CleanDisk24.Classes.Visual.Windows
             //
             brokenSays = await Broken_LbChooseDirectory_SelectionChanged(sender, e);
             Log("broken methood compleeted and: " + brokenSays);
+
+            BrowseDirectoryPanel2((sender as ListBox).SelectedItem as MyPlace);
         }
 
         /// <summary> Panel 1, Click on one of the ROOTS </summary>
@@ -312,6 +316,11 @@ namespace CleanDisk24.Classes.Visual.Windows
                 //mw.DataWorker.SetBrowsedDirectory(selectedDirectory, mw.DataWorker.Browser1);
                 //});
                 DataContext = new FoldersDataViewModel(Database);
+
+
+
+
+
                 Log(message);
             }
             catch (Exception ex)
@@ -333,13 +342,13 @@ namespace CleanDisk24.Classes.Visual.Windows
         }
 
         /// <summary> Panel 2-Head, Browse Up </summary>
-        private void lbChooseDirectory_SubHead_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void lbChooseDirectory_Sub_Head_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
 
         }
 
         /// <summary> Panel 2-Head, Ctrl+Click => Add </summary>
-        private void lbChooseDirectory_SubHead_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void lbChooseDirectory_Sub_Head_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (State == RemovingState.C_NWGB)
             {
@@ -355,7 +364,7 @@ namespace CleanDisk24.Classes.Visual.Windows
         /// <summary> Panel 2, DBClick_BrowseSub </summary>
         private void lbChooseDirectory_Sub_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-
+            BrowseDirectoryPanel2((sender as ListBox).SelectedItem as MyDirectory);
         }
 
         /// <summary> Panel 2, DBClick_BrowseSub Ctrl+Click => Add</summary>
@@ -377,38 +386,97 @@ namespace CleanDisk24.Classes.Visual.Windows
         {
             //from panel 3: into panel 4 scan the chosen directory
             // check: ((( opposite to doubleclick, which removes the item )))
-
+            BrowseDirectoryPanel4((sender as ListBox).SelectedItem as MyDirectory);
         }
 
         /// <summary> Panel 3, DB Click on one of the ROOTS </summary>
         private void lbChoosenDirectories_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             //DBClick_Remove + Target Panel4_Head to create GiveBack item
-           
+            if (State == RemovingState.NotWGB)
+            {
+                State = RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList;
+                var removed = (sender as ListBox).SelectedItem as MyDirectory;
+                BrowseDirectoryPanel4(removed); // ?duplication from single click?
+                RemoveChosenDirectory(removed);
+            }
+            if (State == RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList)
+            {
+                BrowseDirectoryPanel4((sender as ListBox).SelectedItem as MyDirectory); // ?duplication from single click?
+
+            }
+            if (State == RemovingState.C_NWGB)
+            {
+                State = RemovingState.C_WGB;
+                var removed = (sender as ListBox).SelectedItem as MyDirectory;
+                BrowseDirectoryPanel4(removed); // ?duplication from single click?
+                RemoveChosenDirectory(removed);
+            }
+            if (State == RemovingState.C_WGB)
+            {
+                //State = RemovingState.C_WGB;
+                var removed = (sender as ListBox).SelectedItem as MyDirectory;
+                BrowseDirectoryPanel4(removed); // ?duplication from single click?
+                RemoveChosenDirectory(removed);
+            }
         }
 
-        /// <summary> Panel 4_Head, DBClick_(!GiveBackWaiting)_ParentDirectoryInBrowser+(GBW)_GiveBack,  </summary>
-        private void lbChoosenDirectory_SubHead_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        /// <summary> Panel 4_Head, DBClick_(!GiveBackWaiting)_ParentDirectoryInBrowser + (GBW)_GiveBack,  </summary>
+        private void lbChoosenDirectory_Sub_Head_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            if (State == RemovingState.NotWGB || State == RemovingState.C_NWGB)
+            {
+                BrowseDirectoryPanel4(DataWorkerAgent.GetBrowser2Directory(Database).Parent as MyDirectory);
+            }
+            else
+            {
+                AddRootDirectory(DataWorkerAgent.GetCurrentlyRemovedChoosen_MyRootPlace(Database));
+            }
 
         }
 
-        /// <summary> Panel 4_Head, (GBW)CtrlClick_GiveBack+(!GBW)_GBW=>true) </summary>
-        private void lbChoosenDirectory_SubHead_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        /// <summary> Panel 4_Head, (GBW)CtrlClick_GiveBack + (!GBW)_GBW=>true) </summary>
+        private void lbChoosenDirectory_Sub_Head_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            if (State == RemovingState.C_WGB)
+            {
+                AddRootDirectory(DataWorkerAgent.GetCurrentlyRemovedChoosen_MyRootPlace(Database));
+                State = RemovingState.C_NWGB;
+            }
+            if (State == RemovingState.NotWGB) // "false undo" hack
+            {
+                var dir = DataWorkerAgent.GetBrowser2Directory(Database);
+                DataWorkerAgent.SetupCurrentlyRemovedTo(Database, dir as MyRootPlace);
+                BrowseDirectoryPanel4(dir as MyDirectory);
+                State = RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList;
+            }
 
         }
 
         /// <summary> Panel 4, (Browser): (!GBW)DBClick_BrowseSub+(GBW)_GBW=>false,   </summary>
         private void lbChoosenDirectories_Sub_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-
+            if (State == RemovingState.NotWGB)
+            {
+                BrowseDirectoryPanel4((sender as ListBox).SelectedItem as MyDirectory);
+            }
+            if (State == RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList)
+            {
+                State = RemovingState.NotWGB;
+            }
         }
 
         /// <summary> Panel 4, (Browser): (!GBW)CtrlClick_Add, (GiveBackWaiting)=> all red,  </summary>
         private void lbChoosenDirectories_Sub_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-
+            if (State == RemovingState.C_NWGB)
+            {
+                AddRootDirectory((sender as ListBox).SelectedItem as MyRootPlace);
+            }
+            if (State == RemovingState.C_WGB)
+            {
+                // all red
+            }
         }
         #endregion
 
@@ -417,12 +485,55 @@ namespace CleanDisk24.Classes.Visual.Windows
             if (DataWorkerAgent.IsInChosenRoots(myRootPlace, Database))
             {
                 //highlight in panel 4
+                throw new NotImplementedException();
             }
             else
             {
                 DataWorkerAgent.AddToChosenRoots(myRootPlace, Database);
             }
+        }
+
+        /// <summary>Scan 1 (given) directory and then project it into panel 2 and also to its header.</summary>
+        private async void BrowseDirectoryPanel2(MyPlace dir) //MyDirectory myDirectory)
+        {
+            //  var dir = DataWorkerAgent.FindDirectory(Database, dir); //bad way? 05-15
+            //ModelRootsHead=
+            string tryingToSetPanel2 = await DataWorkerAgent.SetBrowser1_async(dir as MyPlace, Database);
+            Log(tryingToSetPanel2);
+        }
+
+        /// <summary>Scan 1 (given) directory and then project it into panel 4 and also to its header.</summary>
+        private void BrowseDirectoryPanel4(MyDirectory myDirectory)
+        {
             throw new NotImplementedException();
+        }
+
+        private void RemoveChosenDirectory(MyDirectory removed)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                if (State == RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList) State = RemovingState.C_WGB;
+                else if (State == RemovingState.NotWGB) State = RemovingState.C_NWGB;
+            }
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+            {
+                if (State == RemovingState.C_WGB) State = RemovingState.WaitingToConfirmRemovalOrGiveBackItemToList;
+                else if (State == RemovingState.C_NWGB) State = RemovingState.NotWGB;
+            }
+        }
+
+        private void lbChooseDirectory_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CleanDisk24.Classes.Visual.OtherVisualisations"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="WindowRoots" Height="450" Width="900" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000" Closing="Window_Closing">
+        Title="WindowRoots" Height="450" Width="900" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000" Closing="Window_Closing" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
     <Grid Background="#00000000">
         <Grid.RowDefinitions>
             <RowDefinition Height="{StaticResource WindowPadding}"/>
@@ -26,7 +26,7 @@
             <ColumnDefinition Width="21*"/>
             <ColumnDefinition Width="{StaticResource WindowPadding}"/>
         </Grid.ColumnDefinitions>
-        <Rectangle Fill="#CCF7F7A1" MouseDown="Rectangle_MouseDown" Grid.ColumnSpan="9" Grid.RowSpan="5"/>
+        <Rectangle x:Name="WindowBackground" Fill="#CCF7F7A1" MouseDown="Rectangle_MouseDown" Grid.ColumnSpan="9" Grid.RowSpan="5"/>
         
         <!--#region Log-->
         <ScrollViewer x:Name="SVLog" Grid.Column="2" Grid.Row="1" VerticalAlignment="Bottom" Grid.ColumnSpan="3" HorizontalAlignment="Right" Width="350" Height="35">
@@ -39,7 +39,7 @@
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
             </ScrollViewer.Resources>
-            <ListBox x:Name="lbChooseDirectory" ItemsSource="{Binding ModelRoots}" SelectionChanged="LbChooseDirectory_SelectionChanged" MouseDoubleClick="lbChooseDirectory_MouseDoubleClick">
+            <ListBox x:Name="lbChooseDirectory" ItemsSource="{Binding ModelRoots}" SelectionChanged="LbChooseDirectory_SelectionChanged" MouseDoubleClick="lbChooseDirectory_MouseDoubleClick" PreviewMouseDoubleClick="lbChooseDirectory_PreviewMouseDoubleClick">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -56,7 +56,7 @@
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
             </ScrollViewer.Resources>
-            <ListBox x:Name="lbChooseDirectory_SubHead" ItemsSource="{Binding ModelRoots_Sub}" MouseDoubleClick="lbChooseDirectory_SubHead_MouseDoubleClick" MouseLeftButtonUp="lbChooseDirectory_SubHead_MouseLeftButtonUp">
+            <ListBox x:Name="lbChooseDirectory_Sub_Head" ItemsSource="{Binding ModelRootsHead}" MouseDoubleClick="lbChooseDirectory_Sub_Head_MouseDoubleClick" MouseLeftButtonUp="lbChooseDirectory_Sub_Head_MouseLeftButtonUp">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
@@ -110,7 +110,7 @@
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
             </ScrollViewer.Resources>
-            <ListBox x:Name="lbChoosenDirectory_SubHead" ItemsSource="{Binding ModelRoots_Sub}" MouseDoubleClick="lbChoosenDirectory_SubHead_MouseDoubleClick" MouseLeftButtonUp="lbChoosenDirectory_SubHead_MouseLeftButtonUp">
+            <ListBox x:Name="lbChoosenDirectory_Sub_Head" ItemsSource="{Binding ModelChosenRootsHead}" MouseDoubleClick="lbChoosenDirectory_Sub_Head_MouseDoubleClick" MouseLeftButtonUp="lbChoosenDirectory_Sub_Head_MouseLeftButtonUp">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>

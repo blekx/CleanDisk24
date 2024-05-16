@@ -13,7 +13,7 @@ namespace CleanDisk24.DataWorker
     {
         // private MyPlace Browser1 = DB.emptyFakeRoot;
         // private MyPlace Browser2 = DB.emptyFakeRoot;
-        private static MyPlace Browser1 = DB.prodigyNTB;
+        private static MyPlace Browser1 { get; set; } = DB.prodigyNTB;
         private static MyPlace Browser2 { get; set; } = DB.prodigyPC;
 
         public static async void SetBrowsedDirectory(MyPlace source, MyPlace area, DB DB)//attepmt for universal solution/useless
@@ -124,6 +124,37 @@ namespace CleanDisk24.DataWorker
                 await ScandAndAddFilesHere_Async(currentlyScannedDirectory.MyPlace, currentlyScannedDirectory.DirectoryInfo, DB);
             //DB.Log($"{filesAdded.ToString()} files added in {currentlyScannedDirectory}");
             return currentlyScannedDirectory.MyPlace;
+        }
+
+        internal static MyPlace GetBrowser1Directory(DB DB)
+        {
+            return Browser1;
+        }
+
+        internal static MyPlace GetBrowser2Directory(DB DB)
+        {
+            return Browser2;
+        }
+
+        internal static MyRootPlace GetCurrentlyRemovedChoosen_MyRootPlace(DB DB)
+        {
+            return DB.CurrentlyRemoved;
+        }
+
+        internal static void SetupCurrentlyRemovedTo(DB DB, MyRootPlace dir)
+        {
+            DB.CurrentlyRemoved = dir;
+        }
+
+        internal static MyDirectory SetBrowser1IntoDB(DB DB, MyDirectory dir)
+        {
+            DB.Browser1 = dir;
+            return dir;
+        }
+        internal static MyDirectory SetBrowser2IntoDB(DB DB, MyDirectory dir)
+        {
+            DB.Browser2 = dir;
+            return dir;
         }
     }
 }

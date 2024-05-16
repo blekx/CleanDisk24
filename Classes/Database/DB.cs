@@ -95,7 +95,7 @@ namespace CleanDisk24.Database
         }
         #endregion
 
-        public ObservableCollection<MyRootPlace> SetOfChosenRoots { get; set; }
+        public ObservableCollection<MyRootPlace> SetOfChosenRoots { get; set; } = new ObservableCollection<MyRootPlace>();
 
         ///<summary>Gets set by AllRoots change</summary>
         public ObservableCollection<MyRootDrive> AllRootDrives { get; private set; } = new ObservableCollection<MyRootDrive>();
@@ -112,5 +112,9 @@ namespace CleanDisk24.Database
         public static MyRootDirectory prodigyNTB = new MyRootDirectory("Prodigy", @"C:\Music\Prodigy");
         public static MyRootDirectory prodigyPC = new MyRootDirectory("Prodigy", @"D:\Music\Music\Prodigy");
         public static MyRootDirectory emptyFakeRoot = new MyRootDirectory("", "") { Items = new List<MyItemDirectoryOrFile>() };
+
+        public MyRootPlace CurrentlyRemoved { get; set; }
+        public MyDirectory Browser1 { get; set; }
+        public MyDirectory Browser2 { get; set; }
     }
 }
