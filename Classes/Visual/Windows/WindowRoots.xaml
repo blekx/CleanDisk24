@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:CleanDisk24.Classes.Visual.OtherVisualisations"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="WindowRoots" Height="450" Width="900" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000" Closing="Window_Closing" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
+        Title="WindowRoots" Height="450" Width="900" MouseDoubleClick="Window_MouseDoubleClick" AllowsTransparency="True" WindowStyle="None" Background="#00000000"
+        Closing="Window_Closing" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp">
     <Grid Background="#00000000">
         <Grid.RowDefinitions>
             <RowDefinition Height="{StaticResource WindowPadding}"/>
@@ -51,7 +52,7 @@
             </ListBox>
         </ScrollViewer>
         <!--#endregion-->
-        <!--#region Head 1: DBClick_ParentDirectoryInBrowser, CtrlClick_Add-->
+        <!--#region Head P2: DBClick_ParentDirectoryInBrowser, CtrlClick_Add-->
         <ScrollViewer Grid.Column="3" Grid.Row="2">
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>
@@ -105,7 +106,7 @@
             </ListBox>
         </ScrollViewer>
         <!--#endregion-->
-        <!--#region Head 2: DBClick_(!GiveBackWaiting)_ParentDirectoryInBrowser+(GBW)_GiveBack, (GBW)CtrlClick_GiveBack+(!GBW)_GBW=>true)-->
+        <!--#region Head P4: DBClick_(!GiveBackWaiting)_ParentDirectoryInBrowser+(GBW)_GiveBack, (GBW)CtrlClick_GiveBack+(!GBW)_GBW=>true)-->
         <ScrollViewer Grid.Column="6" Grid.Row="2">
             <ScrollViewer.Resources>
                 <sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarWidthKey}">17</sys:Double>

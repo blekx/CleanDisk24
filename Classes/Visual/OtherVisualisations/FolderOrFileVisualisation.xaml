@@ -3,9 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:CleanDisk24"
+             xmlns:local="clr-namespace:CleanDisk24" 
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" 
              d:DesignHeight="81" d:DesignWidth="110">
+    <UserControl.Resources>
+        <sys:String x:Key="DefaultSampleText">Sample_Long.bmp</sys:String>
+    </UserControl.Resources>
+
     <Grid Background="#44FFAAAA"
           Height="81" Width="110">
         <Grid.RowDefinitions>
@@ -30,15 +35,182 @@
         <Rectangle Grid.Column="1" Grid.Row="5" Fill="{Binding SizeBr}" Grid.RowSpan="1" />
 
         <!--<TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="Te............st" VerticalAlignment="Top" Grid.RowSpan="1"/>-->
-        <StackPanel Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Grid.RowSpan="1">
+        <StackPanel Visibility="Hidden" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Top" Grid.RowSpan="1">
             <!--<TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Path=Name}" VerticalAlignment="Top" Grid.RowSpan="1"/>
             <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="{Binding Path=WholePath}" VerticalAlignment="Top" Grid.RowSpan="1"/>-->
-            <TextBlock TextWrapping="Wrap" Text="{Binding Name}"/>
-            <TextBlock TextWrapping="Wrap" Text="{Binding WholePath}"
-                       />
+            <!--<Viewbox Stretch="Uniform">-->
+            <!--<Grid MaxHeight="40" MinHeight="20">-->
+            <TextBlock TextWrapping="Wrap" Text="{Binding Name}" d:Text="Sample_My_fake"/>
+            <!--picture.bmp"/>-->
+            <!--</Grid>-->
+            <!--</Viewbox>-->
+            <Grid MaxHeight="40" MinHeight="20">
+                <Viewbox Stretch="Uniform">
+                    <TextBlock TextWrapping="Wrap" Text="{Binding WholePath}" d:Text="C:\Documents\Folder XYZ\Subfolder"/>
+                </Viewbox>
+            </Grid>
         </StackPanel>
+
+        <Grid Visibility="Hidden" x:Name="gd" Grid.Column="1" Grid.Row="3" Grid.RowSpan="1" HorizontalAlignment="Stretch" Width="100">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Grid.Row="1"-->
+            <Viewbox 
+                Grid.Row="0" Grid.Column="0"
+                    Visibility="Visible"                       
+                    Stretch="Uniform" VerticalAlignment="Stretch"
+                     >
+                <TextBlock x:Name="tb" Grid.Row="0" Grid.Column="0" TextWrapping="Wrap" Text="{Binding Name}" d:Text="Sample_My_ghdfdsfgsdgfsgsdfgssfgs.bmp"
+                       MaxHeight="32"
+                       MaxWidth="200"
+                       />
+            </Viewbox>
+            <TextBlock TextWrapping="WrapWithOverflow" Text="{Binding WholePath}" d:Text="C:\Documents\Folder XYZ\Subfolder"     
+                           MaxWidth="200"                            
+                           MinHeight="60"
+                           Grid.Row="1" 
+                           Visibility="Hidden"/>
+            <!--MaxHeight="{Binding ElementName=gd, Path=RowDefinitions[1].ActualHeight}"-->
+            <TextBlock TextWrapping="WrapWithOverflow" Text="{Binding WholePath}" d:Text="C:\Documents\Folder XYZ\Subfolder" 
+                       Grid.Row="1" 
+                       MaxHeight="{Binding ElementName=gd, Path=RowDefinitions[1].ActualHeight}"
+                       MaxWidth="{Binding ElementName=gd, Path=ColumnDefinitions[0].ActualWidth}"
+                       />
+            <TextBlock Visibility="Hidden" Grid.Row="1" TextWrapping="Wrap" Text="{Binding WholePath}" d:Text="C:\Documents\Folder XYZ\Subfolder"
+                       VerticalAlignment="Top" MaxHeight="20"/>
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Viewbox x:Name="vb1"
+                     Grid.Row="0"
+                     Grid.Column="0"
+                     Grid.ColumnSpan="1" Grid.RowSpan="1"
+                    >
+                <TextBlock x:Name="tb1"
+                           TextWrapping="Wrap" 
+                           Text="{Binding Name}" d:Text="{StaticResource DefaultSampleText}"                          
+                           MaxWidth="{Binding ElementName=gM, Path=ActualWidth}"
+                           MinWidth="100"
+                MaxHeight="32" Foreground="#59000000"
+                           />
+                           <!--MaxHeight="{Binding ElementName=gM, Path=ActualHeight}"-->
+                <!--MaxWidth="130"-->
+                <!--MinWidth="100"-->
+            </Viewbox>
+            <Grid Grid.Column="0" Grid.Row="0">
+
+                <Viewbox>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <!--<RowDefinition Height="3"/>-->
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid x:Name="gM"
+                              Grid.Column="3" Grid.ColumnSpan="2" 
+                              Grid.Row="3" Grid.RowSpan="1"
+                              >
+                        </Grid>
+
+                        <!--MaxWidth="330"-->
+                        <TextBlock x:Name="ftb1" Foreground="#A97800FF"
+                                   Grid.Column="0" HorizontalAlignment="Right"
+                                   Grid.Row="0"
+                                   Grid.ColumnSpan="2" Grid.RowSpan="1"
+                                   TextWrapping="NoWrap" 
+                                   Text="{Binding Name}" d:Text="{StaticResource DefaultSampleText}"
+                                   MaxWidth="260"
+                                   MinWidth="90"
+                                   MaxHeight="16"/>
+                        <TextBlock x:Name="ftb2" Foreground="#A97800FF"
+                                   Grid.Column="2" HorizontalAlignment="Right"
+                                   Grid.Row="0"
+                                   Grid.ColumnSpan="2" Grid.RowSpan="1"
+                                   TextWrapping="NoWrap" 
+                                   Text="{Binding Name}" d:Text="{StaticResource DefaultSampleText}"
+                                   MaxWidth="260"
+                                   MinWidth="90"
+                                   MaxHeight="16"/>
+                        <TextBlock x:Name="ftv1" Foreground="#697800FF" Background="#19FF0000"
+                                   Grid.Column="0" HorizontalAlignment="Right" 
+                                   Grid.Row="0"
+                                   Grid.ColumnSpan="1" Grid.RowSpan="1"
+                                   TextWrapping="Wrap" 
+                                   Text="{Binding Name}" d:Text="{StaticResource DefaultSampleText}"
+                                   MaxWidth="100"
+                                   MaxHeight="16"/>
+                        <TextBlock x:Name="ftv2" Foreground="#997800FF"
+                                   Grid.Column="0" HorizontalAlignment="Right"
+                                   Grid.Row="1"
+                                   TextWrapping="Wrap" 
+                                   Text="{Binding Name}" d:Text="{StaticResource DefaultSampleText}"
+                                   MaxWidth="100"
+                                   MaxHeight="16"/>
+                        <TextBlock x:Name="ftbv3" Foreground="#737800FF"
+                                   Grid.Column="0" HorizontalAlignment="Right"
+                                   Grid.Row="2"
+                                   TextWrapping="Wrap" 
+                                   Text="{Binding Name}" d:Text="{StaticResource DefaultSampleText}"
+                                   MaxWidth="100"
+                                   MaxHeight="16"/>
+                        <TextBlock x:Name="ftbv4" Foreground="#737800FF"
+                                   Grid.Column="0" HorizontalAlignment="Right"
+                                   Grid.Row="3"
+                                   TextWrapping="Wrap" 
+                                   Text="{Binding Name}" d:Text="{StaticResource DefaultSampleText}"
+                                   MaxWidth="100"
+                                   MaxHeight="16"/>
+                        <TextBlock x:Name="ftbvx" Foreground="#737800FF" Background="#1900FF00"
+                                   Grid.Column="0" HorizontalAlignment="Right"
+                                   Grid.Row="3"
+                                   TextWrapping="Wrap" 
+                                   Text="{Binding Name}" d:Text="{StaticResource DefaultSampleText}"
+                                   MinWidth="100"
+                                   MaxWidth="{Binding ElementName=gM, Path=ActualWidth}"
+                                   MaxHeight="32"/>
+                    </Grid>
+                </Viewbox>
+            </Grid>
+
+            <Grid Grid.Column="0" Grid.Row="1">
+                <Viewbox>
+                    <TextBlock x:Name="tb2"
+                           TextWrapping="Wrap" 
+                           Text="{Binding WholePath}" d:Text="C:\Documents\Folder XYZ\Subfolder"
+                           MaxWidth="200"
+                           MaxHeight="32"/>
+                </Viewbox>
+            </Grid>
+        </Grid>
+
+
         <TextBlock Grid.Column="1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" 
                    Text="{Binding Path=Size}" VerticalAlignment="Bottom" Grid.RowSpan="3"
-                   Background="#99CCFFFF"/>
+                   Background="#99CCFFFF"
+                   d:Text="123456789"/>
     </Grid>
 </UserControl>

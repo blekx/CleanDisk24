@@ -344,7 +344,8 @@ namespace CleanDisk24.Classes.Visual.Windows
         /// <summary> Panel 2-Head, Browse Up </summary>
         private void lbChooseDirectory_Sub_Head_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-
+            var parent = (DataWorkerAgent.GetBrowser1Directory(Database) as MyDirectory).Parent as MyDirectory;
+            DataWorkerAgent.SetBrowser1IntoDB(Database, parent);
         }
 
         /// <summary> Panel 2-Head, Ctrl+Click => Add </summary>
